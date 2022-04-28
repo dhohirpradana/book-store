@@ -10,6 +10,7 @@ import {
   Stack,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/image/logo.png";
 import manProfile from "../assets/icon/man.png";
 import womanProfile from "../assets/icon/woman.png";
 import user from "../assets/icon/user 2.png";
@@ -85,7 +86,9 @@ export default function NavBar() {
     <Container fluid className="px-5 py-3">
       <Stack direction="horizontal" gap={2}>
         <Link to="/" style={styles.link}>
-          <Navbar.Brand>Books</Navbar.Brand>
+          <Navbar.Brand>
+            <Image src={logo} />
+          </Navbar.Brand>
         </Link>
         <Nav className="ms-auto menu-trigger">
           {isLogin ? (
