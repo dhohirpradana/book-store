@@ -80,6 +80,7 @@ export default function NavBar() {
   const handleLogout = () => {
     handleClose();
     setisLogin(false);
+    navigate("/");
   };
 
   return (
