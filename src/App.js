@@ -20,7 +20,7 @@ function App() {
   return (
     <div style={divStyle}>
       <NavBar />
-      <Container>
+      <Container fluid>
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/profile" element={<Profile />} />

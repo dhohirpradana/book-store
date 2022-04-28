@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.listview {
+  overflow: hidden; /* Hide scrollbars */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: blue orange;
+}
+
+.listview::-webkit-scrollbar {
+  width: 12px;
+  height: 5px;
+}
+
+.listview::-webkit-scrollbar-track {
+  background: none;
+}
+
+.listview::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  border-radius: 20px;
+}
