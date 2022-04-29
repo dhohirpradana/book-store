@@ -2,11 +2,10 @@ import { useContext, useState } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import rightIcon from "../assets/icon/angle-right-solid.png";
 import letfIcon from "../assets/icon/angle-left-solid.png";
-import bookUS from "../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
-import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
+import { CardMedia, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Button, Image } from "react-bootstrap";
 import useWindowDimensions from "../hooks/window";
+import PromoCard from "../components/Home/PromoCard";
 
 export default function Home() {
   const { width } = useWindowDimensions();
@@ -22,6 +21,7 @@ export default function Home() {
         alignItems: "center",
         width: "100%",
       },
+      textJustify: { textJustify: "center" },
     };
   });
 
@@ -53,8 +53,14 @@ export default function Home() {
     };
 
   return (
-    <Stack justifyContent="center">
-      <Typography gutterBottom fontWeight="500" mx="auto" fontSize={18} mb={3}>
+    <>
+      <Typography
+        textAlign="center"
+        fontWeight="500"
+        mx="auto"
+        fontSize={18}
+        mb={3}
+      >
         With us , you can shop online & help save your high street at the same
         time
       </Typography>
@@ -65,7 +71,9 @@ export default function Home() {
         RightArrow={RightArrow}
       >
         {items.map(({ id, title, sold, author }) => (
-          <CardPromo
+          <PromoCard
+            width={width}
+            useStyles={useStyles}
             itemId={id}
             title={title}
             author={author}
@@ -76,54 +84,8 @@ export default function Home() {
           />
         ))}
       </ScrollMenu>
-    </Stack>
+    </>
   );
-
-  function CardPromo({ onClick, selected, title, itemId, sold, author }) {
-    const classes = useStyles();
-    return (
-      <Card elevation={0} className={classes.root}>
-        <CardContent>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            alignItems="center"
-            spacing={{ xs: 1, sm: 2, md: 2 }}
-          >
-            <div>
-              <Image width={185} src={bookUS} />
-            </div>
-            <div className={classes.productRight}>
-              <Typography
-                fontSize={20}
-                fontWeight="bold"
-                textTransform="capitalize"
-              >
-                {title}
-              </Typography>
-              <Typography gutterBottom color="textSecondary">
-                𝐵𝓎. {author}
-              </Typography>
-              <Typography gutterBottom>
-                Habis Gelap Terbitlah Terang adalah buku kumpulan surat yang
-                ditulis oleh Kartini...
-              </Typography>
-              <Typography
-                gutterBottom
-                color="green"
-                fontWeight="bold"
-                fontSize={18}
-              >
-                Rp.58.000
-              </Typography>
-              <Button variant="dark" className={classes.btnAddChart}>
-                Add to Chart
-              </Button>
-            </div>
-          </Stack>
-        </CardContent>
-      </Card>
-    );
-  }
 
   function LeftArrow() {
     const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext);

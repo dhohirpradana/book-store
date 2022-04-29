@@ -2,9 +2,11 @@ import { Alert, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import {
   Button,
+  CloseButton,
   Container,
   Form,
   Image,
+  Modal,
   Nav,
   Navbar,
   Stack,
@@ -16,7 +18,6 @@ import womanProfile from "../assets/icon/woman.png";
 import user from "../assets/icon/user 2.png";
 import complain from "../assets/icon/complain.png";
 import logout from "../assets/icon/logout 1.png";
-import Modal from "react-modal";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -148,7 +149,7 @@ export default function NavBar() {
               </Menu>
             </>
           ) : (
-            <>
+            <div>
               <Stack direction="horizontal">
                 <Button
                   variant="outline-light"
@@ -170,104 +171,82 @@ export default function NavBar() {
               </Stack>
 
               {/* Register Modal*/}
-              <Modal
-                overlayClassName="auth-modal"
-                shouldFocusAfterRender
-                shouldCloseOnOverlayClick
-                isOpen={modalOpen === "register"}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={styles.modal}
-                contentLabel="Register Modal"
-              >
-                <Typography variant="h5" fontWeight="700" mb={3}>
-                  Register
-                </Typography>
-                {error != null ? (
-                  <Alert className="mb-3" severity="error">
-                    There is an error, check it out!
-                  </Alert>
-                ) : (
-                  <></>
-                )}
-                <Form>
-                  <Form.Group className="mb-3" controlId="email">
-                    <Form.Control type="email" placeholder="Email" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="password">
-                    <Form.Control type="password" placeholder="Password" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="fullname">
-                    <Form.Control type="text" placeholder="Full Name" />
-                  </Form.Group>
-                  <Button
-                    style={styles.modal.btn}
-                    onClick={closeModal}
-                    variant="dark"
-                    size="sm"
-                  >
-                    Register
-                  </Button>
-                </Form>
-                <Typography fontSize={14} mx={1.3} mt={2}>
-                  <span>Already have an account? Click </span>
-                  <span
-                    style={{ cursor: "pointer", fontWeight: "600" }}
-                    onClick={() => setOpen("login")}
-                  >
-                    Here
-                  </span>
-                </Typography>
+              <Modal show={modalOpen === "register"} onHide={closeModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Register</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form>
+                    <Form.Group className="mb-3" controlId="email">
+                      <Form.Control type="email" placeholder="Email" />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="password">
+                      <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="fullname">
+                      <Form.Control type="text" placeholder="Full Name" />
+                    </Form.Group>
+                    <Button
+                      style={styles.modal.btn}
+                      onClick={() => seterror("error")}
+                      variant="dark"
+                      size="sm"
+                    >
+                      Register
+                    </Button>
+                  </Form>
+                  <Typography fontSize={14} mt={2} textAlign="center">
+                    <span>Already have an account? Click </span>
+                    <span
+                      style={{ cursor: "pointer", fontWeight: "600" }}
+                      onClick={() => {
+                        seterror(null);
+                        setOpen("login");
+                      }}
+                    >
+                      Here
+                    </span>
+                  </Typography>
+                </Modal.Body>
               </Modal>
 
               {/* Login Modal */}
-              <Modal
-                overlayClassName="auth-modal"
-                shouldFocusAfterRender
-                shouldCloseOnOverlayClick
-                isOpen={modalOpen === "login"}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={styles.modal}
-                contentLabel="Login Modal"
-              >
-                <Typography variant="h5" fontWeight="700" mb={3}>
-                  Login
-                </Typography>{" "}
-                {error != null ? (
-                  <Alert className="mb-3" severity="error">
-                    There is an error, check it out!
-                  </Alert>
-                ) : (
-                  <></>
-                )}
-                <Form>
-                  <Form.Group className="mb-3" controlId="email">
-                    <Form.Control type="email" placeholder="Email" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="password">
-                    <Form.Control type="password" placeholder="Password" />
-                  </Form.Group>
-                  <Button
-                    style={styles.modal.btn}
-                    onClick={handleLogin}
-                    variant="dark"
-                    size="sm"
-                  >
-                    Login
-                  </Button>
-                </Form>
-                <Typography fontSize={14} mx={2.2} mt={2}>
-                  <span>Don't have an account? Click </span>
-                  <span
-                    style={{ cursor: "pointer", fontWeight: "600" }}
-                    onClick={() => setOpen("register")}
-                  >
-                    Here
-                  </span>
-                </Typography>
+              <Modal show={modalOpen === "login"} onHide={closeModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Register</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form>
+                    <Form.Group className="mb-3" controlId="email">
+                      <Form.Control type="email" placeholder="Email" />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="password">
+                      <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
+                    <Button
+                      style={styles.modal.btn}
+                      onClick={handleLogin}
+                      variant="dark"
+                      size="sm"
+                    >
+                      Login
+                    </Button>
+                  </Form>
+                  <Typography fontSize={14} mt={2} textAlign="center">
+                    <span>Don't have an account? Click </span>
+                    <span
+                      style={{ cursor: "pointer", fontWeight: "600" }}
+                      onClick={() => {
+                        seterror(null);
+                        setOpen("register");
+                      }}
+                    >
+                      Here
+                    </span>
+                  </Typography>
+                </Modal.Body>
               </Modal>
-            </>
+            </div>
           )}
         </Nav>
       </Stack>
