@@ -53,7 +53,11 @@ export default function Home() {
     };
 
   return (
-    <>
+    <Stack justifyContent="center">
+      <Typography gutterBottom fontWeight="500" mx="auto" fontSize={18} mb={3}>
+        With us , you can shop online & help save your high street at the same
+        time
+      </Typography>
       <ScrollMenu
         wrapperClassName="listview"
         scrollContainerClassName="listview"
@@ -72,7 +76,7 @@ export default function Home() {
           />
         ))}
       </ScrollMenu>
-    </>
+    </Stack>
   );
 
   function CardPromo({ onClick, selected, title, itemId, sold, author }) {
