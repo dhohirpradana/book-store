@@ -2,10 +2,12 @@ import { useContext, useState } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import rightIcon from "../assets/icon/angle-right-solid.png";
 import letfIcon from "../assets/icon/angle-left-solid.png";
-import { CardMedia, Typography } from "@mui/material";
+import { CardMedia, Container, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import useWindowDimensions from "../hooks/window";
 import PromoCard from "../components/Home/PromoCard";
+import * as Scroll from "react-scroll";
+import BookCard from "../components/Home/BookCard";
 
 export default function Home() {
   const { width } = useWindowDimensions();
@@ -13,7 +15,7 @@ export default function Home() {
     return {
       root: {
         width:
-          width < 768 ? width - 50 : width > 767 && width < 992 ? 500 : 450,
+          width < 768 ? width * 0.7 : width > 767 && width < 992 ? 500 : 450,
         marginInline: 10,
       },
       btnAddChart: { width: "100%", borderRadius: 0 },
@@ -25,7 +27,7 @@ export default function Home() {
     };
   });
 
-  const getItems = (h) =>
+  const getItems = () =>
     Array(150)
       .fill(0)
       .map((_, ind) => ({
@@ -35,22 +37,49 @@ export default function Home() {
         sold: Math.floor(Math.random() * 99) + 1,
       }));
 
+  const getBooks = () =>
+    Array(150)
+      .fill(0)
+      .map((_, ind) => ({
+        id: `${ind + 1}`,
+        title: `harry potter eps.${ind + 1}`,
+        author: `Charles Dickens`,
+        sold: Math.floor(Math.random() * 27) + 1,
+      }));
+
   // eslint-disable-next-line no-unused-vars
   const [items, setItems] = useState(getItems);
-  const [selected, setSelected] = useState([]);
-
-  const isItemSelected = (id) => !!selected.find((el) => el === id);
+  // eslint-disable-next-line no-unused-vars
+  const [books, setbooks] = useState(getBooks);
 
   const handleClick =
     (id) =>
-    ({ getItemById, scrollToItem }) => {
-      const itemSelected = isItemSelected(id);
-      setSelected((currentSelected) =>
-        itemSelected
-          ? currentSelected.filter((el) => el !== id)
-          : currentSelected.concat(id)
-      );
+    ({ getItemById, scrollToItem }) => {};
+
+  var Element = Scroll.Element;
+  let Events = Scroll.Events;
+  // var scroll = Scroll.animateScroll;
+  let scrollSpy = Scroll.scrollSpy;
+
+  useState(() => {
+    Events.scrollEvent.register("begin", function (to, element) {
+      // console.log("begin", arguments);
+    });
+
+    Events.scrollEvent.register("end", function (to, element) {
+      // console.log("end", arguments);
+    });
+    scrollSpy.update();
+
+    return () => {
+      Events.scrollEvent.remove("begin");
+      Events.scrollEvent.remove("end");
     };
+  });
+
+  // function scrollToTop() {
+  //   scroll.scrollToTop();
+  // }
 
   return (
     <>
@@ -80,10 +109,56 @@ export default function Home() {
             sold={sold}
             key={id}
             onClick={handleClick(id)}
-            selected={isItemSelected(id)}
           />
         ))}
       </ScrollMenu>
+      <Container>
+        <Typography
+          marginTop={2}
+          marginBottom={1}
+          marginLeft={2}
+          fontSize={20}
+          fontWeight="bold"
+          textTransform="capitalize"
+        >
+          List Book
+        </Typography>
+        <Element>
+          <Grid container spacing={2}>
+            {books.map(({ id, title, sold, author }) => (
+              <Grid
+                key={id}
+                justifyContent="center"
+                textAlign="center"
+                item
+                xs={6}
+                sm={6}
+                md={3}
+                lg={2}
+              >
+                <BookCard
+                  width={width}
+                  useStyles={useStyles}
+                  itemId={id}
+                  title={title}
+                  author={author}
+                  sold={sold}
+                  key={id}
+                  onClick={handleClick(id)}
+                ></BookCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Element>
+        {/* <Fab
+          style={{ position: "fixed", right: 10, bottom: 10 }}
+          onClick={scrollToTop}
+          color="default"
+          aria-label="add"
+        >
+          <Image component="img" width={25} src={angleUpIcon} />
+        </Fab> */}
+      </Container>
     </>
   );
 

@@ -85,6 +85,7 @@ export default function NavBar() {
 
   return (
     <Container fluid className="px-5 py-3">
+      {/* <Navbar fixed="top"> */}
       <Stack direction="horizontal" gap={2}>
         <Link to="/" style={styles.link}>
           <Navbar.Brand>
@@ -271,6 +272,7 @@ export default function NavBar() {
           )}
         </Nav>
       </Stack>
+      {/* </Navbar> */}
     </Container>
   );
 }

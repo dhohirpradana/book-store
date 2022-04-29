@@ -1,9 +1,9 @@
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import React from "react";
-import { Button, Image } from "react-bootstrap";
-import bookUS from "../../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
+import { Image } from "react-bootstrap";
+import harry from "../../assets/image/harry.jpg";
 
-export default function PromoCard({
+export default function BookCard({
   width,
   useStyles,
   onClick,
@@ -13,19 +13,17 @@ export default function PromoCard({
   sold,
   author,
 }) {
-  const classes = useStyles();
   return (
-    <Card elevation={0} className={classes.root}>
+    <Card elevation={0}>
       <CardContent>
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction="column"
           alignItems="start"
-          spacing={{ xs: 1, sm: 2, md: 2 }}
+          textAlign="start"
+          spacing={{ xs: 1, sm: 1, md: 1 }}
         >
+          <Image width={185} src={harry} />
           <div>
-            <Image width={185} src={bookUS} />
-          </div>
-          <div className={classes.productRight}>
             <Typography
               fontSize={20}
               fontWeight="bold"
@@ -36,21 +34,14 @@ export default function PromoCard({
             <Typography gutterBottom color="textSecondary">
               𝐵𝓎. {author}
             </Typography>
-            <Typography gutterBottom>
-              Habis Gelap Terbitlah Terang adalah buku kumpulan surat yang
-              ditulis oleh Kartini...
-            </Typography>
             <Typography
               gutterBottom
               color="green"
               fontWeight="bold"
               fontSize={18}
             >
-              Rp.58.000
+              Rp.27.000
             </Typography>
-            <Button variant="dark" className={classes.btnAddChart}>
-              Add to Chart
-            </Button>
           </div>
         </Stack>
       </CardContent>
