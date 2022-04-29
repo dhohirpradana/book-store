@@ -10,7 +10,6 @@ import useWindowDimensions from "../hooks/window";
 
 export default function Home() {
   const { width } = useWindowDimensions();
-
   const useStyles = makeStyles(() => {
     return {
       root: {
