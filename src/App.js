@@ -7,6 +7,10 @@ import Profile from "./pages/Profile";
 import { Container } from "react-bootstrap";
 import SignIn from "./pages/SignIn";
 import NavBar from "./components/NavBar";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 const bgImage = require("./assets/image/background.png");
 const divStyle = {

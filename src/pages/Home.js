@@ -1,44 +1,38 @@
-/* eslint-disable no-unused-vars */
 import { useContext, useState } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
-import { useDrag } from "../hooks/drag";
 import rightIcon from "../assets/icon/angle-right-solid.png";
 import letfIcon from "../assets/icon/angle-left-solid.png";
-import { Button, Image } from "react-bootstrap";
-import { Card, CardActions, CardContent, Typography } from "@mui/material";
+import bookUS from "../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
+import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { Button, Image } from "react-bootstrap";
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 309,
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-  btnAddChart: { width: "100%" },
+const useStyles = makeStyles(() => {
+  return {
+    root: {
+      minWidth: 450,
+      marginInline: 27,
+    },
+    btnAddChart: { width: "100%", borderRadius: 0 },
+    productRight: {
+      alignItems: "center",
+      width: "100%",
+    },
+  };
 });
 
 export default function Home() {
-  const { dragMove, dragStart, dragStop } = useDrag();
-  var handleDrag = function (_a) {
-    var scrollContainer = _a.scrollContainer;
-    return function (ev) {
-      return dragMove(ev, function (posDiff) {
-        if (scrollContainer.current) {
-          scrollContainer.current.scrollLeft += posDiff;
-        }
-      });
-    };
-  };
-
   const getItems = () =>
-    Array(20)
+    Array(150)
       .fill(0)
-      .map((_, ind) => ({ id: `featured book ${ind + 1}` }));
+      .map((_, ind) => ({
+        id: `${ind + 1}`,
+        title: `habis gelap terbitlah terang vol ${ind + 1}`,
+        author: `Kartini`,
+        sold: Math.floor(Math.random() * 99) + 1,
+      }));
 
+  // eslint-disable-next-line no-unused-vars
   const [items, setItems] = useState(getItems);
   const [selected, setSelected] = useState([]);
 
@@ -54,6 +48,7 @@ export default function Home() {
           : currentSelected.concat(id)
       );
     };
+
   return (
     <>
       <ScrollMenu
@@ -61,12 +56,13 @@ export default function Home() {
         scrollContainerClassName="listview"
         LeftArrow={LeftArrow}
         RightArrow={RightArrow}
-        onMouseMove={handleDrag}
       >
-        {items.map(({ id }) => (
+        {items.map(({ id, title, sold, author }) => (
           <CardPromo
-            itemId={id} // NOTE: itemId is required for track items
-            title={id}
+            itemId={id}
+            title={title}
+            author={author}
+            sold={sold}
             key={id}
             onClick={handleClick(id)}
             selected={isItemSelected(id)}
@@ -76,39 +72,54 @@ export default function Home() {
     </>
   );
 
-  function CardPromo({ onClick, selected, title, itemId }) {
-    const visibility = useContext(VisibilityContext);
+  function CardPromo({ onClick, selected, title, itemId, sold, author }) {
     const classes = useStyles();
     return (
       <Card className={classes.root}>
         <CardContent>
-          <Typography
-            className={classes.title}
-            color="textSecondary"
-            gutterBottom
-            textTransform="capitalize"
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            alignItems="center"
+            spacing={{ xs: 1, sm: 2, md: 2 }}
           >
-            {title}
-          </Typography>
-          <Typography variant="h5" component="h2">
-            Best Seller
-          </Typography>
-          <Typography className={classes.pos} color="textSecondary">
-            visible: {JSON.stringify(!!visibility.isItemVisible(itemId))}
+            <div>
+              <Image width={185} src={bookUS} />
+            </div>
+            <div className={classes.productRight}>
+              <Typography
+                fontSize={20}
+                fontWeight="bold"
+                textTransform="capitalize"
+              >
+                {title}
+              </Typography>
+              <Typography gutterBottom color="textSecondary">
+                𝐵𝓎. {author}
+              </Typography>
+              <Typography gutterBottom>
+                Habis Gelap Terbitlah Terang adalah buku kumpulan surat yang
+                ditulis oleh Kartini...
+              </Typography>
+              <Typography
+                gutterBottom
+                color="green"
+                fontWeight="bold"
+                fontSize={18}
+              >
+                Rp.58.000
+              </Typography>
+              <Button variant="dark" className={classes.btnAddChart}>
+                Add to Chart
+              </Button>
+            </div>
+          </Stack>
+          {/* <Typography variant="h5" component="h2">
+            sold: {sold}
           </Typography>
           <Typography variant="body2" component="p">
             selected: {JSON.stringify(!!selected)}
-          </Typography>
+          </Typography> */}
         </CardContent>
-        <CardActions>
-          <Button
-            onClick={() => onClick(visibility)}
-            variant="dark"
-            className={classes.btnAddChart}
-          >
-            Add to Chart
-          </Button>
-        </CardActions>
       </Card>
     );
   }
@@ -148,7 +159,7 @@ export default function Home() {
           userSelect: "none",
         }}
       >
-        <Image src={children} style={{ height: 50 }} />
+        <CardMedia component="img" height={50} image={children} />
       </div>
     );
   }
