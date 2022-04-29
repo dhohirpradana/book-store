@@ -2,7 +2,6 @@ import { Alert, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import {
   Button,
-  CloseButton,
   Container,
   Form,
   Image,
@@ -66,8 +65,6 @@ export default function NavBar() {
   function openModal(modalTS) {
     setOpen(modalTS);
   }
-
-  function afterOpenModal() {}
 
   function closeModal() {
     setOpen(null);
@@ -176,6 +173,13 @@ export default function NavBar() {
                   <Modal.Title>Register</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                  {error ? (
+                    <Alert severity="warning" className="mb-3">
+                      This is a warning alert — check it out!
+                    </Alert>
+                  ) : (
+                    <></>
+                  )}
                   <Form>
                     <Form.Group className="mb-3" controlId="email">
                       <Form.Control type="email" placeholder="Email" />
@@ -216,6 +220,13 @@ export default function NavBar() {
                   <Modal.Title>Register</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                  {error ? (
+                    <Alert severity="warning" className="mb-3">
+                      This is a warning alert — check it out!
+                    </Alert>
+                  ) : (
+                    <></>
+                  )}
                   <Form>
                     <Form.Group className="mb-3" controlId="email">
                       <Form.Control type="email" placeholder="Email" />
