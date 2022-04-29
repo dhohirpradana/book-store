@@ -13,7 +13,7 @@ export default function Home() {
     return {
       root: {
         width:
-          width < 768 ? width * 0.7 : width > 767 && width < 992 ? 500 : 450,
+          width < 768 ? width - 50 : width > 767 && width < 992 ? 500 : 450,
         marginInline: 10,
       },
       btnAddChart: { width: "100%", borderRadius: 0 },

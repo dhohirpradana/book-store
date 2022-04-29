@@ -17,6 +17,7 @@ import womanProfile from "../assets/icon/woman.png";
 import user from "../assets/icon/user 2.png";
 import complain from "../assets/icon/complain.png";
 import logout from "../assets/icon/logout 1.png";
+import useWindowDimensions from "../hooks/window";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -39,6 +40,7 @@ const styles = {
 };
 
 export default function NavBar() {
+  const { width } = useWindowDimensions();
   // eslint-disable-next-line no-unused-vars
   const [isLogin, setisLogin] = useState(false);
   const navigate = useNavigate();
@@ -168,7 +170,11 @@ export default function NavBar() {
               </Stack>
 
               {/* Register Modal*/}
-              <Modal show={modalOpen === "register"} onHide={closeModal}>
+              <Modal
+                centered={width > 767}
+                show={modalOpen === "register"}
+                onHide={closeModal}
+              >
                 <Modal.Header closeButton>
                   <Modal.Title>Register</Modal.Title>
                 </Modal.Header>
@@ -215,7 +221,11 @@ export default function NavBar() {
               </Modal>
 
               {/* Login Modal */}
-              <Modal show={modalOpen === "login"} onHide={closeModal}>
+              <Modal
+                centered={width > 767}
+                show={modalOpen === "login"}
+                onHide={closeModal}
+              >
                 <Modal.Header closeButton>
                   <Modal.Title>Register</Modal.Title>
                 </Modal.Header>
