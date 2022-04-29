@@ -28,7 +28,7 @@ export default function Home() {
   });
 
   const getItems = () =>
-    Array(150)
+    Array(24)
       .fill(0)
       .map((_, ind) => ({
         id: `${ind + 1}`,
