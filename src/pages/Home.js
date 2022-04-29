@@ -6,23 +6,27 @@ import bookUS from "../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
 import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Button, Image } from "react-bootstrap";
-
-const useStyles = makeStyles(() => {
-  return {
-    root: {
-      minWidth: 450,
-      marginInline: 27,
-    },
-    btnAddChart: { width: "100%", borderRadius: 0 },
-    productRight: {
-      alignItems: "center",
-      width: "100%",
-    },
-  };
-});
+import useWindowDimensions from "../hooks/window";
 
 export default function Home() {
-  const getItems = () =>
+  const { width } = useWindowDimensions();
+
+  const useStyles = makeStyles(() => {
+    return {
+      root: {
+        width:
+          width < 768 ? width * 0.7 : width > 767 && width < 992 ? 500 : 450,
+        marginInline: 10,
+      },
+      btnAddChart: { width: "100%", borderRadius: 0 },
+      productRight: {
+        alignItems: "center",
+        width: "100%",
+      },
+    };
+  });
+
+  const getItems = (h) =>
     Array(150)
       .fill(0)
       .map((_, ind) => ({
@@ -75,7 +79,7 @@ export default function Home() {
   function CardPromo({ onClick, selected, title, itemId, sold, author }) {
     const classes = useStyles();
     return (
-      <Card className={classes.root}>
+      <Card elevation={0} className={classes.root}>
         <CardContent>
           <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -113,12 +117,6 @@ export default function Home() {
               </Button>
             </div>
           </Stack>
-          {/* <Typography variant="h5" component="h2">
-            sold: {sold}
-          </Typography>
-          <Typography variant="body2" component="p">
-            selected: {JSON.stringify(!!selected)}
-          </Typography> */}
         </CardContent>
       </Card>
     );
