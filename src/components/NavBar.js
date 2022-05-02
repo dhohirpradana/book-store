@@ -16,6 +16,7 @@ import manProfile from "../assets/icon/man.png";
 import womanProfile from "../assets/icon/woman.png";
 import user from "../assets/icon/user 2.png";
 import complain from "../assets/icon/complain.png";
+import cart from "../assets/icon/cart.png";
 import logout from "../assets/icon/logout 1.png";
 import useWindowDimensions from "../hooks/window";
 
@@ -95,6 +96,11 @@ export default function NavBar() {
         <Nav className="ms-auto menu-trigger">
           {isLogin ? (
             <>
+              <Image
+                className="p-0 me-4 my-auto"
+                src={cart}
+                style={{ height: 30 }}
+              />
               <IconButton
                 size="large"
                 aria-label="account of current user"

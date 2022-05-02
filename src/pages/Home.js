@@ -52,34 +52,9 @@ export default function Home() {
   // eslint-disable-next-line no-unused-vars
   const [books, setbooks] = useState(getBooks);
 
-  const handleClick =
-    (id) =>
-    ({ getItemById, scrollToItem }) => {};
+  const handleClick = (id) => console.log(id);
 
   var Element = Scroll.Element;
-  let Events = Scroll.Events;
-  // var scroll = Scroll.animateScroll;
-  let scrollSpy = Scroll.scrollSpy;
-
-  useState(() => {
-    Events.scrollEvent.register("begin", function (to, element) {
-      // console.log("begin", arguments);
-    });
-
-    Events.scrollEvent.register("end", function (to, element) {
-      // console.log("end", arguments);
-    });
-    scrollSpy.update();
-
-    return () => {
-      Events.scrollEvent.remove("begin");
-      Events.scrollEvent.remove("end");
-    };
-  });
-
-  // function scrollToTop() {
-  //   scroll.scrollToTop();
-  // }
 
   return (
     <>
@@ -108,7 +83,7 @@ export default function Home() {
             author={author}
             sold={sold}
             key={id}
-            onClick={handleClick(id)}
+            onClick={() => handleClick(id)}
           />
         ))}
       </ScrollMenu>
@@ -150,14 +125,6 @@ export default function Home() {
             ))}
           </Grid>
         </Element>
-        {/* <Fab
-          style={{ position: "fixed", right: 10, bottom: 10 }}
-          onClick={scrollToTop}
-          color="default"
-          aria-label="add"
-        >
-          <Image component="img" width={25} src={angleUpIcon} />
-        </Fab> */}
       </Container>
     </>
   );

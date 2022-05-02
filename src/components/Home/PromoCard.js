@@ -19,7 +19,7 @@ export default function PromoCard({
       <CardContent>
         <Stack
           direction={{ xs: "column", sm: "row" }}
-          alignItems="start"
+          alignItems="center"
           spacing={{ xs: 1, sm: 2, md: 2 }}
         >
           <div>
@@ -48,7 +48,11 @@ export default function PromoCard({
             >
               Rp.58.000
             </Typography>
-            <Button variant="dark" className={classes.btnAddChart}>
+            <Button
+              variant="dark"
+              onClick={onClick}
+              className={classes.btnAddChart}
+            >
               Add to Chart
             </Button>
           </div>
