@@ -1,5 +1,12 @@
-import { Alert, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import React, { useState } from "react";
+import {
+  Alert,
+  Badge,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -19,6 +26,7 @@ import complain from "../assets/icon/complain.png";
 import cart from "../assets/icon/cart.png";
 import logout from "../assets/icon/logout 1.png";
 import useWindowDimensions from "../hooks/window";
+import { CartContext } from "../contexts/cart";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -51,6 +59,12 @@ export default function NavBar() {
   const [modalOpen, setOpen] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [error, seterror] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [cartContext, dispatch] = useContext(CartContext);
+
+  useEffect(() => {
+    console.log(cartContext);
+  });
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -96,11 +110,20 @@ export default function NavBar() {
         <Nav className="ms-auto menu-trigger">
           {isLogin ? (
             <>
-              <Image
-                className="p-0 me-4 my-auto"
-                src={cart}
-                style={{ height: 30 }}
-              />
+              <IconButton
+                size="large"
+                onClick={() => navigate("/cart")}
+                color="inherit"
+                className="p-2 me-3"
+              >
+                <Badge badgeContent={cartContext.cartCount} color="error">
+                  <Image
+                    className="my-auto"
+                    src={cart}
+                    style={{ height: 30 }}
+                  />
+                </Badge>
+              </IconButton>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -108,7 +131,7 @@ export default function NavBar() {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
-                className="p-0"
+                className="p-1"
               >
                 <Image
                   className="p-0"
@@ -147,7 +170,7 @@ export default function NavBar() {
                   />
                   Complain
                 </MenuItem>
-                <hr class="solid"></hr>
+                <hr className="solid"></hr>
                 <MenuItem onClick={handleLogout}>
                   <Image src={logout} style={{ width: 25 }} className="me-3" />
                   Logout

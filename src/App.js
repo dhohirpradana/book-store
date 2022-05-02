@@ -11,6 +11,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import Cart from "./pages/Cart";
 
 const bgImage = require("./assets/image/background.png");
 const divStyle = {
@@ -24,15 +25,16 @@ function App() {
   return (
     <div style={divStyle}>
       <NavBar />
-      <Container fluid>
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/about" element={<About />} />
-          <Route exact path="/complain" element={<Complain />} />
-          <Route exact path="/signin" element={<SignIn />} />
-        </Routes>
-      </Container>
+        <Container fluid>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/cart" element={<Cart />} />
+            <Route exact path="/about" element={<About />} />
+            <Route exact path="/complain" element={<Complain />} />
+            <Route exact path="/signin" element={<SignIn />} />
+          </Routes>
+        </Container>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import useWindowDimensions from "../hooks/window";
 import PromoCard from "../components/Home/PromoCard";
 import * as Scroll from "react-scroll";
 import BookCard from "../components/Home/BookCard";
+import { CartContext } from "../contexts/cart";
 
 export default function Home() {
   const { width } = useWindowDimensions();
@@ -51,8 +52,11 @@ export default function Home() {
   const [items, setItems] = useState(getItems);
   // eslint-disable-next-line no-unused-vars
   const [books, setbooks] = useState(getBooks);
+  const [state, dispatch] = useContext(CartContext);
 
-  const handleClick = (id) => console.log(id);
+  const handleClick = (id) => {
+    dispatch({ type: "ADD_CART", payload: state.cartCount + 1 });
+  };
 
   var Element = Scroll.Element;
 
@@ -119,7 +123,7 @@ export default function Home() {
                   author={author}
                   sold={sold}
                   key={id}
-                  onClick={handleClick(id)}
+                  onClick={() => handleClick(id)}
                 ></BookCard>
               </Grid>
             ))}
