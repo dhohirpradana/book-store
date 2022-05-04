@@ -7,7 +7,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   Button,
   Container,
@@ -59,6 +59,7 @@ export default function NavBar() {
   const [error, seterror] = useState(null);
   const [cartContext] = useContext(CartContext);
   const [userContext, userDispatch] = useContext(UserContext);
+  const loginRef = useRef();
 
   useEffect(() => {
     // console.log(cartContext);
@@ -86,7 +87,13 @@ export default function NavBar() {
   }
 
   const handleLogin = () => {
-    userDispatch({ type: "LOGIN_SUCCESS", payload: "ACCESS_TOKEN" });
+    console.log(loginRef.current.email.value);
+    let role =
+      loginRef.current.email.value === "admin@mail.com" ? "admin" : "customer";
+    userDispatch({
+      type: "LOGIN_SUCCESS",
+      payload: { role: role, token: "ACCESS_TOKEN" },
+    });
     closeModal();
   };
 
@@ -109,16 +116,14 @@ export default function NavBar() {
           {userContext.isLogin ? (
             <>
               <IconButton
+                hidden={userContext.user.role === "admin"}
                 size="large"
                 onClick={() => navigate("/cart")}
                 color="inherit"
                 className="p-2 me-3"
               >
                 <Badge badgeContent={cartContext.cartCount} color="error">
-                  <Image
-                    className="my-auto"
-                    src={cart}
-                  />
+                  <Image className="my-auto" src={cart} />
                 </Badge>
               </IconButton>
               <IconButton
@@ -249,7 +254,7 @@ export default function NavBar() {
                 onHide={closeModal}
               >
                 <Modal.Header closeButton>
-                  <Modal.Title>Register</Modal.Title>
+                  <Modal.Title>Login</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   {error ? (
@@ -259,9 +264,13 @@ export default function NavBar() {
                   ) : (
                     <></>
                   )}
-                  <Form>
+                  <Form ref={loginRef}>
                     <Form.Group className="mb-3" controlId="email">
-                      <Form.Control type="email" placeholder="Email" />
+                      <Form.Control
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="password">
                       <Form.Control type="password" placeholder="Password" />

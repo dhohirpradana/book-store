@@ -16,6 +16,7 @@ import BookDetail from "./pages/BookDetail";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./contexts/user";
 import { Box } from "@mui/material";
+import Transaction from "./pages/Transaction";
 
 const bgImage = require("./assets/image/background.png");
 
@@ -25,7 +26,10 @@ function App() {
 
   useEffect(() => {
     if (localStorage.token) {
-      userDispatch({ type: "LOGIN_SUCCESS", payload: "ACCESS_TOKEN" });
+      userDispatch({
+        type: "LOGIN_SUCCESS",
+        payload: { role: "customer", token: "ACCESS_TOKEN" },
+      });
     }
   }, [userDispatch]);
 
@@ -40,7 +44,13 @@ function App() {
       <NavBar />
       <Container fluid>
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route
+            exact
+            path="/"
+            element={
+              userContext.user.role === "admin" ? <Transaction /> : <Home />
+            }
+          />
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/book-detail/:id" element={<BookDetail />} />
           <Route exact path="/cart" element={<Cart />} />

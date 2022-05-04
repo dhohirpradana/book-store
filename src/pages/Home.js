@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => {
   return {
     root: {
       width: (width) => {
-        console.log(width);
+        // console.log(width);
         if (width < 768) {
           return width * 0.7;
         } else if (width > 767 && width < 992) {

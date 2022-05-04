@@ -15,7 +15,6 @@ const useStyles = makeStyles({
     marginBottom: 25,
     marginTop: 35,
     width: (width) => {
-      console.log(width);
       if (width < 900) {
         return "100%";
       } else {
