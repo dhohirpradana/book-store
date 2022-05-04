@@ -61,7 +61,7 @@ export default function NavBar() {
 
   useEffect(() => {
     console.log(cartContext);
-  });
+  },[cartContext]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);

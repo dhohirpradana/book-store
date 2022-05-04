@@ -27,12 +27,13 @@ const divStyle = {
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [userContext, userDispatch] = useContext(UserContext);
-  
+
   useEffect(() => {
     if (localStorage.token) {
       userDispatch({ type: "LOGIN_SUCCESS", payload: "ACCESS_TOKEN" });
     }
-  });
+  }, [userDispatch]);
+
   return (
     <div style={divStyle}>
       <NavBar />
