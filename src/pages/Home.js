@@ -10,24 +10,33 @@ import * as Scroll from "react-scroll";
 import BookCard from "../components/Home/BookCard";
 import { CartContext } from "../contexts/cart";
 
+const useStyles = makeStyles(() => {
+  return {
+    root: {
+      width: (width) => {
+        console.log(width);
+        if (width < 768) {
+          return width * 0.7;
+        } else if (width > 767 && width < 992) {
+          return 620;
+        } else {
+          return 500;
+        }
+      },
+      marginInline: 10,
+    },
+    btnAddChart: { width: "100%", borderRadius: 0 },
+    productRight: {
+      alignItems: "center",
+      width: "100%",
+    },
+    textJustify: { textJustify: "center" },
+  };
+});
+
 export default function Home() {
   const { width } = useWindowDimensions();
-  const useStyles = makeStyles(() => {
-    return {
-      root: {
-        width:
-          width < 768 ? width * 0.7 : width > 767 && width < 992 ? 500 : 450,
-        marginInline: 10,
-      },
-      btnAddChart: { width: "100%", borderRadius: 0 },
-      productRight: {
-        alignItems: "center",
-        width: "100%",
-      },
-      textJustify: { textJustify: "center" },
-    };
-  });
-
+  const classes = useStyles(width);
   const getItems = () =>
     Array(24)
       .fill(0)
@@ -39,7 +48,7 @@ export default function Home() {
       }));
 
   const getBooks = () =>
-    Array(150)
+    Array(50)
       .fill(0)
       .map((_, ind) => ({
         id: `${ind + 1}`,
@@ -79,7 +88,7 @@ export default function Home() {
         {items.map(({ id, title, sold, author }) => (
           <PromoCard
             width={width}
-            useStyles={useStyles}
+            classes={classes}
             itemId={id}
             title={title}
             author={author}

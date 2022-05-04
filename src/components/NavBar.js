@@ -60,7 +60,7 @@ export default function NavBar() {
   const [userContext, userDispatch] = useContext(UserContext);
 
   useEffect(() => {
-    console.log(cartContext);
+    // console.log(cartContext);
   },[cartContext]);
 
   const handleMenu = (event) => {

@@ -1,11 +1,13 @@
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Button, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import bookUS from "../../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
+import useCrypto from "../../hooks/crypto";
 
 export default function PromoCard({
   width,
-  useStyles,
+  classes,
   onClick,
   selected,
   title,
@@ -13,7 +15,9 @@ export default function PromoCard({
   sold,
   author,
 }) {
-  const classes = useStyles();
+  const { encryptId } = useCrypto();
+  const encryptedId = encryptId(itemId);
+
   return (
     <Card elevation={0} className={classes.root}>
       <CardContent>
@@ -26,13 +30,19 @@ export default function PromoCard({
             <Image width={185} src={bookUS} />
           </div>
           <div className={classes.productRight}>
-            <Typography
-              fontSize={20}
-              fontWeight="bold"
-              textTransform="capitalize"
+            <Link
+              to={"/book-detail/" + encryptedId}
+              style={{ textDecoration: "none", color: "black" }}
             >
-              {title}
-            </Typography>
+              <Typography
+                fontSize={20}
+                fontWeight="bold"
+                textTransform="capitalize"
+              >
+                {title}
+              </Typography>
+            </Link>
+
             <Typography gutterBottom color="textSecondary">
               𝐵𝓎. {author}
             </Typography>
