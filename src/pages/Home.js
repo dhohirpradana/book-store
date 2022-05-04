@@ -48,14 +48,12 @@ export default function Home() {
         sold: Math.floor(Math.random() * 27) + 1,
       }));
 
-  // eslint-disable-next-line no-unused-vars
-  const [items, setItems] = useState(getItems);
-  // eslint-disable-next-line no-unused-vars
-  const [books, setbooks] = useState(getBooks);
-  const [state, dispatch] = useContext(CartContext);
+  const [items] = useState(getItems);
+  const [books] = useState(getBooks);
+  const [cartContext, cartDispatch] = useContext(CartContext);
 
   const handleClick = (id) => {
-    dispatch({ type: "ADD_CART", payload: state.cartCount + 1 });
+    cartDispatch({ type: "ADD_CART", payload: cartContext.cartCount + 1 });
   };
 
   var Element = Scroll.Element;

@@ -27,6 +27,7 @@ import cart from "../assets/icon/cart.png";
 import logout from "../assets/icon/logout 1.png";
 import useWindowDimensions from "../hooks/window";
 import { CartContext } from "../contexts/cart";
+import { UserContext } from "../contexts/user";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -50,17 +51,13 @@ const styles = {
 
 export default function NavBar() {
   const { width } = useWindowDimensions();
-  // eslint-disable-next-line no-unused-vars
-  const [isLogin, setisLogin] = useState(false);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [gender, setgender] = useState("male");
+  const [gender] = useState("male");
   const [modalOpen, setOpen] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [error, seterror] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [cartContext, dispatch] = useContext(CartContext);
+  const [cartContext] = useContext(CartContext);
+  const [userContext, userDispatch] = useContext(UserContext);
 
   useEffect(() => {
     console.log(cartContext);
@@ -88,13 +85,13 @@ export default function NavBar() {
   }
 
   const handleLogin = () => {
-    setisLogin(true);
+    userDispatch({ type: "LOGIN_SUCCESS", payload: "ACCESS_TOKEN" });
     closeModal();
   };
 
   const handleLogout = () => {
     handleClose();
-    setisLogin(false);
+    userDispatch({ type: "LOGOUT" });
     navigate("/");
   };
 
@@ -108,7 +105,7 @@ export default function NavBar() {
           </Navbar.Brand>
         </Link>
         <Nav className="ms-auto menu-trigger">
-          {isLogin ? (
+          {userContext.isLogin ? (
             <>
               <IconButton
                 size="large"
