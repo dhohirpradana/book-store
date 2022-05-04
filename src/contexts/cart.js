@@ -3,7 +3,7 @@ import { createContext, useReducer } from "react";
 export const CartContext = createContext();
 
 const initialState = {
-  cartCount: 3,
+  cartCount: 0,
 };
 
 const reducer = (state, action) => {
