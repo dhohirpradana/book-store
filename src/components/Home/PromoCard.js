@@ -46,7 +46,7 @@ export default function PromoCard({
             <Typography gutterBottom color="textSecondary">
               𝐵𝓎. {author}
             </Typography>
-            <Typography gutterBottom className="text">
+            <Typography gutterBottom className="text" textAlign="justify">
               Habis Gelap Terbitlah Terang adalah buku kumpulan surat yang
               ditulis oleh Kartini. Kumpulan surat tersebut dibukukan oleh J.H.
               Abendanon dengan judul Door Duisternis Tot Licht. Setelah Kartini
