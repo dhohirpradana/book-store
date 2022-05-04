@@ -1,6 +1,6 @@
 import { Container, Stack, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { Button, Image } from "react-bootstrap";
+import { Image, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import useCrypto from "../hooks/crypto";
 import bookUS from "../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
@@ -44,9 +44,11 @@ export default function BookDetail() {
         mb={5}
       >
         <Image
+          alt="details"
           src={bookUS}
           width={270}
           className={width < 900 ? "m-auto" : ""}
+          style={{ borderRadius: 5 }}
         />
         <Stack direction="column">
           <Typography fontSize={32} fontWeight={600} textTransform="capitalize">

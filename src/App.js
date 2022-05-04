@@ -15,14 +15,9 @@ import Cart from "./pages/Cart";
 import BookDetail from "./pages/BookDetail";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./contexts/user";
+import { Box } from "@mui/material";
 
 const bgImage = require("./assets/image/background.png");
-const divStyle = {
-  width: "100%",
-  height: "100vh",
-  backgroundImage: `url(${bgImage})`,
-  backgroundSize: "cover",
-};
 
 function App() {
   // eslint-disable-next-line no-unused-vars
@@ -35,7 +30,13 @@ function App() {
   }, [userDispatch]);
 
   return (
-    <div style={divStyle}>
+    <Box
+      sx={{
+        backgroundImage: `url(${bgImage})`,
+        width: "100%",
+        height: "100vh",
+      }}
+    >
       <NavBar />
       <Container fluid>
         <Routes>
@@ -48,7 +49,7 @@ function App() {
           <Route exact path="/signin" element={<SignIn />} />
         </Routes>
       </Container>
-    </div>
+    </Box>
   );
 }
 

@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Alert,
   Badge,
   IconButton,
@@ -61,7 +62,7 @@ export default function NavBar() {
 
   useEffect(() => {
     // console.log(cartContext);
-  },[cartContext]);
+  }, [cartContext]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -117,7 +118,6 @@ export default function NavBar() {
                   <Image
                     className="my-auto"
                     src={cart}
-                    style={{ height: 30 }}
                   />
                 </Badge>
               </IconButton>
@@ -130,12 +130,7 @@ export default function NavBar() {
                 color="inherit"
                 className="p-1"
               >
-                <Image
-                  className="p-0"
-                  src={gender === "male" ? manProfile : womanProfile}
-                  roundedCircle
-                  style={{ height: 40 }}
-                />
+                <Avatar src={gender === "male" ? manProfile : womanProfile} />
               </IconButton>
               <Menu
                 id="menu-appbar"
