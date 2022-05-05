@@ -57,7 +57,7 @@ export default function NavBar() {
   const [gender] = useState("male");
   const [modalOpen, setOpen] = useState(null);
   const [error, seterror] = useState(null);
-  const [cartContext] = useContext(CartContext);
+  const [cartContext, cartDispatch] = useContext(CartContext);
   const [userContext, userDispatch] = useContext(UserContext);
   const loginRef = useRef();
 
@@ -100,6 +100,7 @@ export default function NavBar() {
   const handleLogout = () => {
     handleClose();
     userDispatch({ type: "LOGOUT" });
+    cartDispatch({ type: "CLEAR_CART" });
     navigate("/");
   };
 

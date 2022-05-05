@@ -14,6 +14,10 @@ const reducer = (state, action) => {
       return {
         cartCount: payload,
       };
+    case "CLEAR_CART":
+      return {
+        cartCount: 0,
+      };
     default:
       throw new Error();
   }
