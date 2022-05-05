@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@develoka/angka-rupiah-js': ^1.0.3
   '@emotion/react': ^11.9.0
   '@emotion/styled': ^11.8.1
   '@fontsource/roboto': ^4.5.5
@@ -27,6 +28,7 @@ specifiers:
   web-vitals: ^2.1.0
 
 dependencies:
+  '@develoka/angka-rupiah-js': 1.0.3
   '@emotion/react': 11.9.0_react@18.1.0
   '@emotion/styled': 11.8.1_btguaf77hpuxici4esujjeifki
   '@fontsource/roboto': 4.5.5
@@ -1549,6 +1551,10 @@ packages:
       postcss: ^8.3
     dependencies:
       postcss: 8.4.13
+    dev: false
+
+  /@develoka/angka-rupiah-js/1.0.3:
+    resolution: {integrity: sha512-dkWuclc7reZd6eFGOnnm8vwWIkMbGdceSUILrJKMf2sBhOxc5/J169p2vTS1orX3dRoEZtZqb53ajKKv9zVT5A==}
     dev: false
 
   /@emotion/babel-plugin/11.9.2:
