@@ -7,15 +7,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartContextProvider } from "./contexts/cart";
 import { UserContextProvider } from "./contexts/user";
+import { QueryClient, QueryClientProvider } from "react-query";
+const client = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <UserContextProvider>
       <CartContextProvider>
-        <Router>
-          <App />
-        </Router>
+        <QueryClientProvider client={client}>
+          <Router>
+            <App />
+          </Router>
+        </QueryClientProvider>
       </CartContextProvider>
     </UserContextProvider>
   </React.StrictMode>

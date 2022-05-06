@@ -29,6 +29,8 @@ import logout from "../assets/icon/logout 1.png";
 import useWindowDimensions from "../hooks/window";
 import { CartContext } from "../contexts/cart";
 import { UserContext } from "../contexts/user";
+import { API } from "../configs/api";
+import { useMutation } from "react-query";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -86,16 +88,39 @@ export default function NavBar() {
     setOpen(null);
   }
 
-  const handleLogin = () => {
-    console.log(loginRef.current.email.value);
-    let role =
-      loginRef.current.email.value === "admin@mail.com" ? "admin" : "customer";
-    userDispatch({
-      type: "LOGIN_SUCCESS",
-      payload: { role: role, token: "ACCESS_TOKEN" },
-    });
-    closeModal();
-  };
+  const handleLogin = useMutation(async (e) => {
+    seterror(null);
+    try {
+      e.preventDefault();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = JSON.stringify({
+        email: loginRef.current["email"].value,
+        password: loginRef.current["password"].value,
+      });
+
+      const response = await API.post("/login", body, config);
+      const user = response.data.data;
+
+      if (response.status === 200) {
+        closeModal();
+        userDispatch({
+          type: "LOGIN_SUCCESS",
+          payload: user,
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      const msg = error.response.data.error.message;
+      // console.log(error.response.data);
+      seterror(msg);
+    }
+  });
 
   const handleLogout = () => {
     handleClose();
@@ -208,8 +233,8 @@ export default function NavBar() {
                 </Modal.Header>
                 <Modal.Body>
                   {error ? (
-                    <Alert severity="warning" className="mb-3">
-                      This is a warning alert — check it out!
+                    <Alert severity="error" className="mb-3">
+                      {error}
                     </Alert>
                   ) : (
                     <></>
@@ -259,13 +284,13 @@ export default function NavBar() {
                 </Modal.Header>
                 <Modal.Body>
                   {error ? (
-                    <Alert severity="warning" className="mb-3">
-                      This is a warning alert — check it out!
+                    <Alert severity="error" className="mb-3">
+                      {error}
                     </Alert>
                   ) : (
                     <></>
                   )}
-                  <Form ref={loginRef}>
+                  <Form ref={loginRef} onSubmit={(e) => handleLogin.mutate(e)}>
                     <Form.Group className="mb-3" controlId="email">
                       <Form.Control
                         name="email"
@@ -274,11 +299,16 @@ export default function NavBar() {
                       />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="password">
-                      <Form.Control type="password" placeholder="Password" />
+                      <Form.Control
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                      />
                     </Form.Group>
                     <Button
                       style={styles.modal.btn}
-                      onClick={handleLogin}
+                      // onClick={handleLogin}
+                      type="submit"
                       variant="dark"
                       size="sm"
                     >
