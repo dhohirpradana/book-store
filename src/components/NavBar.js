@@ -62,6 +62,7 @@ export default function NavBar() {
   const [cartContext, cartDispatch] = useContext(CartContext);
   const [userContext, userDispatch] = useContext(UserContext);
   const loginRef = useRef();
+  const registerRef = useRef();
 
   useEffect(() => {
     // console.log(cartContext);
@@ -89,7 +90,6 @@ export default function NavBar() {
   }
 
   const handleLogin = useMutation(async (e) => {
-    seterror(null);
     try {
       e.preventDefault();
 
@@ -100,8 +100,8 @@ export default function NavBar() {
       };
 
       const body = JSON.stringify({
-        email: loginRef.current["email"].value,
-        password: loginRef.current["password"].value,
+        email: loginRef.current.email.value,
+        password: loginRef.current.password.value,
       });
 
       const response = await API.post("/login", body, config);
@@ -113,11 +113,43 @@ export default function NavBar() {
           type: "LOGIN_SUCCESS",
           payload: user,
         });
-        navigate("/");
       }
     } catch (error) {
       const msg = error.response.data.error.message;
       // console.log(error.response.data);
+      seterror(msg);
+    }
+  });
+
+  const handleRegister = useMutation(async (e) => {
+    try {
+      e.preventDefault();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = JSON.stringify({
+        name: registerRef.current.fullname.value,
+        email: registerRef.current.email.value,
+        password: registerRef.current.password.value,
+      });
+
+      const response = await API.post("/register", body, config);
+      const user = response.data.data;
+
+      if (response.status === 201) {
+        closeModal();
+        userDispatch({
+          type: "LOGIN_SUCCESS",
+          payload: user,
+        });
+      }
+    } catch (error) {
+      const msg = error.response.data.error.message;
+      console.log(error.response);
       seterror(msg);
     }
   });
@@ -239,19 +271,37 @@ export default function NavBar() {
                   ) : (
                     <></>
                   )}
-                  <Form>
+                  <Form
+                    ref={registerRef}
+                    onSubmit={(e) => handleRegister.mutate(e)}
+                  >
+                    <Form.Group className="mb-3" controlId="fullname">
+                      <Form.Control
+                        name="fullname"
+                        type="text"
+                        placeholder="Full Name"
+                        onChange={() => seterror(null)}
+                      />
+                    </Form.Group>
                     <Form.Group className="mb-3" controlId="email">
-                      <Form.Control type="email" placeholder="Email" />
+                      <Form.Control
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        onChange={() => seterror(null)}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="password">
-                      <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="fullname">
-                      <Form.Control type="text" placeholder="Full Name" />
+                      <Form.Control
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        onChange={() => seterror(null)}
+                      />
                     </Form.Group>
                     <Button
+                      type="submit"
                       style={styles.modal.btn}
-                      onClick={() => seterror("error")}
                       variant="dark"
                       size="sm"
                     >
@@ -296,6 +346,7 @@ export default function NavBar() {
                         name="email"
                         type="email"
                         placeholder="Email"
+                        onChange={() => seterror(null)}
                       />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="password">
@@ -303,6 +354,7 @@ export default function NavBar() {
                         name="password"
                         type="password"
                         placeholder="Password"
+                        onChange={() => seterror(null)}
                       />
                     </Form.Group>
                     <Button
