@@ -75,14 +75,13 @@ export default function Transaction() {
       <Typography
         marginTop={2}
         marginBottom={3}
-        marginLeft={2}
         fontSize={20}
         fontWeight="bold"
         textTransform="capitalize"
       >
         incoming transaction
       </Typography>
-      <TableContainer component={Paper} sx={{ maxHeight: "70vh", marginX: 2 }}>
+      <TableContainer component={Paper} sx={{ maxHeight: "70vh" }}>
         <Table
           sx={{ minWidth: 700 }}
           aria-label="customized table"

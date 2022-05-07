@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartContextProvider } from "./contexts/cart";
 import { UserContextProvider } from "./contexts/user";
+import { ModalContextProvider } from "./contexts/authModal";
 import { QueryClient, QueryClientProvider } from "react-query";
 const client = new QueryClient();
 
@@ -15,11 +16,13 @@ root.render(
   <React.StrictMode>
     <UserContextProvider>
       <CartContextProvider>
-        <QueryClientProvider client={client}>
-          <Router>
-            <App />
-          </Router>
-        </QueryClientProvider>
+        <ModalContextProvider>
+          <QueryClientProvider client={client}>
+            <Router>
+              <App />
+            </Router>
+          </QueryClientProvider>
+        </ModalContextProvider>
       </CartContextProvider>
     </UserContextProvider>
   </React.StrictMode>

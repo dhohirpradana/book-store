@@ -12,10 +12,17 @@ export default function ProfileItem({ icon, titleValue, title }) {
       >
         {icon}
         <Stack ml={1}>
-          <Typography color="black" fontWeight={500} fontSize={11}>
+          <Typography
+            color="black"
+            textTransform={title !== "email" ? "capitalize" : "none"}
+            fontWeight={500}
+            fontSize={11}
+          >
             {titleValue}
           </Typography>
-          <Typography fontSize={11} textTransform="capitalize">{title}</Typography>
+          <Typography fontSize={11} textTransform="capitalize">
+            {title}
+          </Typography>
         </Stack>
       </Stack>
     </div>

@@ -1,19 +1,15 @@
 import {
   Avatar,
-  Alert,
   Badge,
   IconButton,
   Menu,
   MenuItem,
-  Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Container,
-  Form,
   Image,
-  Modal,
   Nav,
   Navbar,
   Stack,
@@ -26,11 +22,10 @@ import user from "../assets/icon/user 2.png";
 import complain from "../assets/icon/complain.png";
 import cart from "../assets/icon/cart.png";
 import logout from "../assets/icon/logout 1.png";
-import useWindowDimensions from "../hooks/window";
 import { CartContext } from "../contexts/cart";
 import { UserContext } from "../contexts/user";
-import { API } from "../configs/api";
-import { useMutation } from "react-query";
+import { ModalContext } from "../contexts/authModal";
+import AuthModal from "./Modal/AuthModal";
 
 const styles = {
   link: { textDecoration: "none", color: "black" },
@@ -53,16 +48,12 @@ const styles = {
 };
 
 export default function NavBar() {
-  const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [gender] = useState("male");
-  const [modalOpen, setOpen] = useState(null);
-  const [error, seterror] = useState(null);
   const [cartContext, cartDispatch] = useContext(CartContext);
   const [userContext, userDispatch] = useContext(UserContext);
-  const loginRef = useRef();
-  const registerRef = useRef();
+  // eslint-disable-next-line no-unused-vars
+  const [modalContext, modalDispatch] = useContext(ModalContext);
 
   useEffect(() => {
     // console.log(cartContext);
@@ -82,77 +73,11 @@ export default function NavBar() {
   };
 
   function openModal(modalTS) {
-    setOpen(modalTS);
+    modalDispatch({
+      type: "MODAL_OPEN",
+      payload: modalTS,
+    });
   }
-
-  function closeModal() {
-    setOpen(null);
-  }
-
-  const handleLogin = useMutation(async (e) => {
-    try {
-      e.preventDefault();
-
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-
-      const body = JSON.stringify({
-        email: loginRef.current.email.value,
-        password: loginRef.current.password.value,
-      });
-
-      const response = await API.post("/login", body, config);
-      const user = response.data.data;
-
-      if (response.status === 200) {
-        closeModal();
-        userDispatch({
-          type: "LOGIN_SUCCESS",
-          payload: user,
-        });
-      }
-    } catch (error) {
-      const msg = error.response.data.error.message;
-      // console.log(error.response.data);
-      seterror(msg);
-    }
-  });
-
-  const handleRegister = useMutation(async (e) => {
-    try {
-      e.preventDefault();
-
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-
-      const body = JSON.stringify({
-        name: registerRef.current.fullname.value,
-        email: registerRef.current.email.value,
-        password: registerRef.current.password.value,
-      });
-
-      const response = await API.post("/register", body, config);
-      const user = response.data.data;
-
-      if (response.status === 201) {
-        closeModal();
-        userDispatch({
-          type: "LOGIN_SUCCESS",
-          payload: user,
-        });
-      }
-    } catch (error) {
-      const msg = error.response.data.error.message;
-      console.log(error.response);
-      seterror(msg);
-    }
-  });
 
   const handleLogout = () => {
     handleClose();
@@ -193,7 +118,13 @@ export default function NavBar() {
                 color="inherit"
                 className="p-1"
               >
-                <Avatar src={gender === "male" ? manProfile : womanProfile} />
+                <Avatar
+                  src={
+                    userContext.user.gender === "male"
+                      ? manProfile
+                      : womanProfile
+                  }
+                />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -253,134 +184,7 @@ export default function NavBar() {
                   Register
                 </Button>
               </Stack>
-
-              {/* Register Modal*/}
-              <Modal
-                centered={width > 767}
-                show={modalOpen === "register"}
-                onHide={closeModal}
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>Register</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {error ? (
-                    <Alert severity="error" className="mb-3">
-                      {error}
-                    </Alert>
-                  ) : (
-                    <></>
-                  )}
-                  <Form
-                    ref={registerRef}
-                    onSubmit={(e) => handleRegister.mutate(e)}
-                  >
-                    <Form.Group className="mb-3" controlId="fullname">
-                      <Form.Control
-                        name="fullname"
-                        type="text"
-                        placeholder="Full Name"
-                        onChange={() => seterror(null)}
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="email">
-                      <Form.Control
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        onChange={() => seterror(null)}
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="password">
-                      <Form.Control
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        onChange={() => seterror(null)}
-                      />
-                    </Form.Group>
-                    <Button
-                      type="submit"
-                      style={styles.modal.btn}
-                      variant="dark"
-                      size="sm"
-                    >
-                      Register
-                    </Button>
-                  </Form>
-                  <Typography fontSize={14} mt={2} textAlign="center">
-                    <span>Already have an account? Click </span>
-                    <span
-                      style={{ cursor: "pointer", fontWeight: "600" }}
-                      onClick={() => {
-                        seterror(null);
-                        setOpen("login");
-                      }}
-                    >
-                      Here
-                    </span>
-                  </Typography>
-                </Modal.Body>
-              </Modal>
-
-              {/* Login Modal */}
-              <Modal
-                centered={width > 767}
-                show={modalOpen === "login"}
-                onHide={closeModal}
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>Login</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {error ? (
-                    <Alert severity="error" className="mb-3">
-                      {error}
-                    </Alert>
-                  ) : (
-                    <></>
-                  )}
-                  <Form ref={loginRef} onSubmit={(e) => handleLogin.mutate(e)}>
-                    <Form.Group className="mb-3" controlId="email">
-                      <Form.Control
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        onChange={() => seterror(null)}
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="password">
-                      <Form.Control
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        onChange={() => seterror(null)}
-                      />
-                    </Form.Group>
-                    <Button
-                      style={styles.modal.btn}
-                      // onClick={handleLogin}
-                      type="submit"
-                      variant="dark"
-                      size="sm"
-                    >
-                      Login
-                    </Button>
-                  </Form>
-                  <Typography fontSize={14} mt={2} textAlign="center">
-                    <span>Don't have an account? Click </span>
-                    <span
-                      style={{ cursor: "pointer", fontWeight: "600" }}
-                      onClick={() => {
-                        seterror(null);
-                        setOpen("register");
-                      }}
-                    >
-                      Here
-                    </span>
-                  </Typography>
-                </Modal.Body>
-              </Modal>
+              <AuthModal />
             </div>
           )}
         </Nav>

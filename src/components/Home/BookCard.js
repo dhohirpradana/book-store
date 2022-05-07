@@ -1,14 +1,17 @@
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Image } from "react-bootstrap";
-import harry from "../../assets/image/harry.jpg";
+import noImage from "../../assets/image/no image.png";
+import toRupiah from "@develoka/angka-rupiah-js";
 
 export default function BookCard({
   width,
   useStyles,
   onClick,
   selected,
+  image,
   title,
+  price,
   itemId,
   sold,
   author,
@@ -22,7 +25,7 @@ export default function BookCard({
           textAlign="start"
           spacing={{ xs: 1, sm: 1, md: 1 }}
         >
-          <Image width={185} src={harry} />
+          <Image width={185} src={image || noImage} />
           <div>
             <Typography
               fontSize={20}
@@ -40,7 +43,7 @@ export default function BookCard({
               fontWeight="bold"
               fontSize={18}
             >
-              Rp.27.000
+              Rp.{toRupiah(price, { symbol: "", floatingPoint: 0 })}
             </Typography>
           </div>
         </Stack>

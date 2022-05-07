@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
 import rightIcon from "../assets/icon/angle-right-solid.png";
 import letfIcon from "../assets/icon/angle-left-solid.png";
@@ -9,6 +9,10 @@ import PromoCard from "../components/Home/PromoCard";
 import * as Scroll from "react-scroll";
 import BookCard from "../components/Home/BookCard";
 import { CartContext } from "../contexts/cart";
+import AuthModal from "../components/Modal/AuthModal";
+import { ModalContext } from "../contexts/authModal";
+import { UserContext } from "../contexts/user";
+import { API } from "../configs/api";
 
 const useStyles = makeStyles(() => {
   return {
@@ -47,21 +51,32 @@ export default function Home() {
         sold: Math.floor(Math.random() * 99) + 1,
       }));
 
-  const getBooks = () =>
-    Array(50)
-      .fill(0)
-      .map((_, ind) => ({
-        id: `${ind + 1}`,
-        title: `harry potter eps.${ind + 1}`,
-        author: `Charles Dickens`,
-        sold: Math.floor(Math.random() * 27) + 1,
-      }));
-
   const [items] = useState(getItems);
-  const [books] = useState(getBooks);
+  const [books, setBooks] = useState([]);
   const [cartContext, cartDispatch] = useContext(CartContext);
+  const [userContext] = useContext(UserContext);
+  // eslint-disable-next-line no-unused-vars
+  const [modalContext, modalDispatch] = useContext(ModalContext);
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    await API.get("/books")
+      .then((response) => {
+        const books = response.data.data.books;
+        setBooks(books);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const handleClick = (id) => {
+    if (!userContext.isLogin)
+      return modalDispatch({
+        type: "MODAL_OPEN",
+        payload: "login",
+      });
     cartDispatch({ type: "ADD_CART", payload: cartContext.cartCount + 1 });
   };
 
@@ -102,7 +117,6 @@ export default function Home() {
         <Typography
           marginTop={2}
           marginBottom={1}
-          marginLeft={2}
           fontSize={20}
           fontWeight="bold"
           textTransform="capitalize"
@@ -111,7 +125,7 @@ export default function Home() {
         </Typography>
         <Element>
           <Grid container spacing={2}>
-            {books.map(({ id, title, sold, author }) => (
+            {books.map(({ id, title, author, price, image }) => (
               <Grid
                 key={id}
                 justifyContent="center"
@@ -120,7 +134,7 @@ export default function Home() {
                 xs={6}
                 sm={6}
                 md={3}
-                lg={2}
+                lg={3}
               >
                 <BookCard
                   width={width}
@@ -128,7 +142,8 @@ export default function Home() {
                   itemId={id}
                   title={title}
                   author={author}
-                  sold={sold}
+                  price={price}
+                  image={image}
                   key={id}
                   onClick={() => handleClick(id)}
                 ></BookCard>
@@ -136,6 +151,7 @@ export default function Home() {
             ))}
           </Grid>
         </Element>
+        <AuthModal />
       </Container>
     </>
   );
