@@ -3,16 +3,44 @@ import { Container, Divider, Stack, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import toRupiah from "@develoka/angka-rupiah-js";
 import { CartContext } from "../contexts/cart";
+import { API } from "../configs/api";
 
 export default function Cart() {
-  const [cartContext] = useContext(CartContext);
   const [subtotal, setSubtotal] = useState(0);
+  const [qty, setQty] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [cartContext, cartDispatch] = useContext(CartContext);
+  const [carts, setcarts] = useState([]);
+
+  const fetchCarts = async () => {
+    await API.get("/carts")
+      .then((response) => {
+        cartDispatch({
+          type: "ADD_CART",
+          payload: response.data.data.carts.length,
+        });
+        setcarts(response.data.data.carts);
+
+        let q = 0;
+        let st = 0;
+        response.data.data.carts.map((cart) => {
+          return [(st += cart.book.price * cart.count), (q += cart.count)];
+        });
+        setQty(q);
+        setSubtotal(st);
+      })
+      .catch((error) => {
+        cartDispatch({
+          type: "CLEAR_CART",
+        });
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
-    if (cartContext.cartCount !== 0) {
-      setSubtotal(cartContext.cartCount * 58000);
-    }
-  }, [cartContext.cartCount]);
+    fetchCarts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container sx={{ paddingX: 2 }}>
@@ -34,9 +62,18 @@ export default function Cart() {
               Empty Cart
             </Typography>
           ) : (
-            <Typography textAlign="center" fontWeight={500} color="#929292">
-              Ada {cartContext.cartCount} Item
-            </Typography>
+            carts.map((cart) => {
+              return (
+                <Typography
+                  key={cart.id}
+                  textAlign="center"
+                  fontWeight={500}
+                  color="#929292"
+                >
+                  {cart.book.title}
+                </Typography>
+              );
+            })
           )}
           <Divider orientation="horizontal" flexItem />
         </Stack>
@@ -51,7 +88,7 @@ export default function Cart() {
           <Stack direction="row" justifyContent="space-between">
             <Typography textTransform="capitalize">qty</Typography>
             <Typography textTransform="capitalize">
-              {cartContext.cartCount}
+              {qty}
             </Typography>
           </Stack>
           <Divider orientation="horizontal" flexItem />
