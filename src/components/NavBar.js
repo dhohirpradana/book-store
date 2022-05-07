@@ -1,24 +1,12 @@
-import {
-  Avatar,
-  Badge,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Avatar, Badge, IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  Image,
-  Nav,
-  Navbar,
-  Stack,
-} from "react-bootstrap";
+import { Button, Container, Image, Nav, Navbar, Stack } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
 import manProfile from "../assets/icon/man.png";
 import womanProfile from "../assets/icon/woman.png";
 import user from "../assets/icon/user 2.png";
+import addBook from "../assets/icon/addbook.png";
 import complain from "../assets/icon/complain.png";
 import cart from "../assets/icon/cart.png";
 import logout from "../assets/icon/logout 1.png";
@@ -145,6 +133,22 @@ export default function NavBar() {
                   <Image src={user} style={{ width: 25 }} className="me-3" />
                   Profile
                 </MenuItem>
+                {userContext.user.role === "admin" ? (
+                  <MenuItem
+                    onClick={() => handleMenuSelect("book-add")}
+                    className="pe-4"
+                  >
+                    <Image
+                      src={addBook}
+                      style={{ width: 25 }}
+                      className="me-3"
+                    />
+                    Add Book
+                  </MenuItem>
+                ) : (
+                  <></>
+                )}
+
                 <MenuItem
                   onClick={() => handleMenuSelect("complain")}
                   className="pe-4"

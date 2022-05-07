@@ -7,6 +7,12 @@ import {
   Button,
   Autocomplete,
   TextField,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+  Chip,
 } from "@mui/material";
 import React, { useState, useRef, useContext } from "react";
 import { styled } from "@mui/material/styles";
@@ -17,6 +23,7 @@ import TransgenderIcon from "@mui/icons-material/Transgender";
 import ProfileItem from "../components/Profile/ProfileItem";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import RoomIcon from "@mui/icons-material/Room";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Form, Image, Modal, Button as RBButton } from "react-bootstrap";
 import profileImg from "../assets/image/Rectangle 12.png";
 import { useMutation } from "react-query";
@@ -50,8 +57,24 @@ export default function Profile() {
   const { width } = useWindowDimensions();
   const [modalOpen, setOpen] = useState(false);
   const [error, seterror] = useState(null);
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [subDistricts, setSubDistricts] = useState([]);
   const [userContext, userDispatch] = useContext(UserContext);
   const formRef = useRef();
+  const [city, setCity] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [subDistrict, setSubDistrict] = useState(null);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [collapseAddress, setCollapseAddress] = useState(false);
+
+  const handleClickOpenDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
 
   const fetchMe = async () => {
     await API.get("/me")
@@ -65,16 +88,100 @@ export default function Profile() {
       .catch((error) => console.log(error));
   };
 
+  const handleChangeProvince = (e, value) => {
+    if (value) {
+      fetchCities(value.id);
+    } else {
+      setCity(null);
+      setCities([]);
+    }
+  };
+
+  const handleChangeCity = (e, value) => {
+    if (value) {
+      fetchSubDistricts(value.id);
+      setCity(value.id);
+    } else {
+      setSubDistrict(null);
+      setSubDistricts([]);
+    }
+  };
+
+  const handleChangeSubDistrict = (e, value) => {
+    if (value) setSubDistrict(value.id);
+  };
+
+  const fetchProvinces = async () => {
+    await API.get("/provinces")
+      .then((response) => {
+        const provinces = response.data.data.provinces;
+        setProvinces(provinces);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const fetchCities = async (provinceId) => {
+    await API.get("/province/" + provinceId + "/cities")
+      .then((response) => {
+        const cities = response.data.data.cities;
+        setCities(cities);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const fetchSubDistricts = async (cityId) => {
+    await API.get("/city/" + cityId + "/subdistricts")
+      .then((response) => {
+        const subdistricts = response.data.data.subdistricts;
+        setSubDistricts(subdistricts);
+      })
+      .catch((error) => console.log(error));
+  };
+
   function openModal() {
     setOpen(true);
+    fetchProvinces();
   }
 
   function closeModal() {
     setOpen(false);
   }
 
+  const deleteAddress = async (addressId) => {
+    handleCloseDelete();
+    await API.delete("/address/" + addressId)
+      .then(() => {
+        fetchMe();
+      })
+      .catch((error) => console.log(error));
+  };
+
   const handleUpdate = useMutation(async (e) => {
     e.preventDefault();
+    const saveUser = async () => {
+      const body = JSON.stringify({
+        name: formRef.current.fullname.value,
+        email: formRef.current.email.value,
+        phone: formRef.current.phone.value,
+        gender: formRef.current.gender.value,
+        ...(formRef.current.password.value !== "" && {
+          password: formRef.current.password.value,
+        }),
+      });
+
+      await API.patch("/user", body, config)
+        .then((response) => {
+          if (response.status === 200) {
+            closeModal();
+            fetchMe();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response);
+          const msg = error.response.data.error.message;
+          seterror(msg);
+        });
+    };
 
     const config = {
       headers: {
@@ -82,25 +189,30 @@ export default function Profile() {
       },
     };
 
-    const body = JSON.stringify({
-      name: formRef.current.fullname.value,
-      email: formRef.current.email.value,
-      gender: formRef.current.gender.value,
-      password: formRef.current.password.value,
-    });
+    if (collapseAddress) {
+      if (!city || !formRef.current.detail.value)
+        return seterror("Complete all address forms!");
 
-    await API.patch("/user", body, config)
-      .then((response) => {
-        if (response.status === 200) {
-          closeModal();
-          fetchMe();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        const msg = error.response.data.error.message;
-        seterror(msg);
+      const body = JSON.stringify({
+        detail: formRef.current.detail.value,
+        cityId: city,
       });
+
+      await API.post("/address", body, config)
+        .then((response) => {
+          if (response.status === 201) {
+            saveUser();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response);
+          const msg = error.response.data.error.message;
+          seterror(msg);
+        });
+      return;
+    }
+
+    saveUser();
   });
 
   return (
@@ -250,13 +362,124 @@ export default function Profile() {
                 )}
               />
             </Form.Group>
+            {!userContext.user.address ? (
+              <>
+                <Button
+                  variant="outlined"
+                  sx={{ mb: 1, width: "100%" }}
+                  onClick={() => setCollapseAddress(!collapseAddress)}
+                >
+                  add address
+                </Button>
+                <Stack display={!collapseAddress ? "none" : ""}>
+                  <Form.Group className="mb-3" controlId="province">
+                    <Form.Label>Province</Form.Label>
+                    <Autocomplete
+                      disablePortal
+                      size="small"
+                      id="province"
+                      onChange={handleChangeProvince}
+                      options={provinces}
+                      getOptionLabel={(province) => province.name || ""}
+                      renderInput={(params) => (
+                        <TextField {...params} label="province" />
+                      )}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="city">
+                    <Form.Label>City</Form.Label>
+                    <Autocomplete
+                      disablePortal
+                      size="small"
+                      id="city"
+                      onChange={handleChangeCity}
+                      options={cities}
+                      getOptionLabel={(city) => city.name || ""}
+                      renderInput={(params) => (
+                        <TextField {...params} label="city" />
+                      )}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="subdistrict">
+                    <Form.Label>Sub District</Form.Label>
+                    <Autocomplete
+                      disablePortal
+                      size="small"
+                      id="subdistrict"
+                      onChange={handleChangeSubDistrict}
+                      options={subDistricts}
+                      getOptionLabel={(subdistrict) => subdistrict.name || ""}
+                      renderInput={(params) => (
+                        <TextField {...params} label="sub district" />
+                      )}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="detail">
+                    <Form.Label>Detail</Form.Label>
+                    <Form.Control
+                      name="detail"
+                      type="text"
+                      placeholder="address details"
+                      defaultValue=""
+                      onChange={() => seterror(null)}
+                    />
+                  </Form.Group>
+                </Stack>
+              </>
+            ) : (
+              <Stack direction="row">
+                <Form.Group controlId="addressD">
+                  <Form.Label>
+                    Address
+                    <Chip
+                      size="small"
+                      sx={{ ml: 1 }}
+                      label="delete"
+                      onClick={handleClickOpenDelete}
+                      onDelete={handleClickOpenDelete}
+                      color="error"
+                      deleteIcon={<DeleteIcon />}
+                    />
+                  </Form.Label>
+                  <Typography gutterBottom fontWeight={600}>
+                    {userContext.user.address.detail}
+                  </Typography>
+                </Form.Group>
+                <Dialog
+                  open={openDelete}
+                  onClose={handleCloseDelete}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    {"Delete Address?"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Your address has been deleted and will affect your next
+                      transaction
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDelete}>Cancel</Button>
+                    <Button
+                      color="error"
+                      onClick={() => deleteAddress(userContext.user.address.id)}
+                      autoFocus
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Stack>
+            )}
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 name="password"
                 type="password"
                 placeholder="New Password"
-                defaultValue={null}
+                defaultValue=""
                 style={{ borderColor: "red" }}
                 onChange={() => seterror(null)}
               />
