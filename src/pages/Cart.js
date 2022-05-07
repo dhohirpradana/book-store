@@ -4,10 +4,12 @@ import { Button } from "react-bootstrap";
 import toRupiah from "@develoka/angka-rupiah-js";
 import { CartContext } from "../contexts/cart";
 import { API } from "../configs/api";
+import Order from "../components/Cart/Order";
 
 export default function Cart() {
   const [subtotal, setSubtotal] = useState(0);
   const [qty, setQty] = useState(0);
+  const [withOngkir, setWithOngkir] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [cartContext, cartDispatch] = useContext(CartContext);
   const [carts, setcarts] = useState([]);
@@ -22,11 +24,20 @@ export default function Cart() {
         setcarts(response.data.data.carts);
 
         let q = 0;
+        let ro = 0;
         let st = 0;
         response.data.data.carts.map((cart) => {
-          return [(st += cart.book.price * cart.count), (q += cart.count)];
+          const withOngkir = () => {
+            if (!cart.book.isEbook) ro += cart.book.price * cart.count;
+          };
+          return [
+            (st += cart.book.price * cart.count),
+            (q += cart.count),
+            withOngkir(),
+          ];
         });
         setQty(q);
+        setWithOngkir(ro);
         setSubtotal(st);
       })
       .catch((error) => {
@@ -64,20 +75,27 @@ export default function Cart() {
           ) : (
             carts.map((cart) => {
               return (
-                <Typography
+                <Order
+                  image={cart.book.image}
+                  author={cart.book.author}
+                  title={cart.book.title}
+                  count={cart.count}
+                  price={cart.book.price}
+                  isEbook={cart.book.isEbook}
                   key={cart.id}
-                  textAlign="center"
-                  fontWeight={500}
-                  color="#929292"
-                >
-                  {cart.book.title}
-                </Typography>
+                />
               );
             })
           )}
           <Divider orientation="horizontal" flexItem />
         </Stack>
-        <Stack spacing={2} width={{ xs: "100%", md: "30%" }} pt={1} pl={2}>
+        <Stack
+          spacing={2}
+          width={{ xs: "100%", md: "30%" }}
+          pt={{ xs: 1, md: 7 }}
+          pl={{ xs: 0, md: 2 }}
+          pb={2}
+        >
           <Divider orientation="horizontal" flexItem />
           <Stack direction="row" justifyContent="space-between">
             <Typography textTransform="capitalize">subtotal</Typography>
@@ -87,8 +105,21 @@ export default function Cart() {
           </Stack>
           <Stack direction="row" justifyContent="space-between">
             <Typography textTransform="capitalize">qty</Typography>
+            <Typography textTransform="capitalize">{qty}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography textTransform="capitalize">withouth courier</Typography>
             <Typography textTransform="capitalize">
-              {qty}
+              {toRupiah(subtotal - withOngkir, {
+                symbol: "",
+                floatingPoint: 0,
+              })}
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography textTransform="capitalize">with courier</Typography>
+            <Typography textTransform="capitalize">
+              {toRupiah(withOngkir, { symbol: "", floatingPoint: 0 })}
             </Typography>
           </Stack>
           <Divider orientation="horizontal" flexItem />
