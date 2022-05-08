@@ -14,7 +14,7 @@ import {
   DialogActions,
   Chip,
 } from "@mui/material";
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import EmailIcon from "@mui/icons-material/Email";
 import MaleIcon from "@mui/icons-material/Male";
@@ -67,6 +67,10 @@ export default function Profile() {
   const [subDistrict, setSubDistrict] = useState(null);
   const [openDelete, setOpenDelete] = useState(false);
   const [collapseAddress, setCollapseAddress] = useState(false);
+
+  useEffect(() => {
+    fetchProvinces();
+  }, []);
 
   const handleClickOpenDelete = () => {
     setOpenDelete(true);
@@ -140,7 +144,6 @@ export default function Profile() {
 
   function openModal() {
     setOpen(true);
-    fetchProvinces();
   }
 
   function closeModal() {
