@@ -4,6 +4,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { API } from "../../configs/api";
 import { ModalContext } from "../../contexts/authModal";
+import { CartContext } from "../../contexts/cart";
 import { UserContext } from "../../contexts/user";
 import useWindowDimensions from "../../hooks/window";
 
@@ -34,6 +35,8 @@ export default function AuthModal() {
   const [userContext, userDispatch] = useContext(UserContext);
   const loginRef = useRef();
   const registerRef = useRef();
+  // eslint-disable-next-line no-unused-vars
+  const [cartContext, cartDispatch] = useContext(CartContext);
 
   function openModal(modalTS) {
     modalDispatch({
@@ -47,6 +50,23 @@ export default function AuthModal() {
       type: "MODAL_CLOSE",
     });
   }
+
+  const fetchCarts = async () => {
+    await API.get("/carts")
+      .then((response) => {
+        // console.log(response.data.data.carts);
+        cartDispatch({
+          type: "ADD_CART",
+          payload: response.data.data.carts.length,
+        });
+      })
+      .catch((error) => {
+        cartDispatch({
+          type: "CLEAR_CART",
+        });
+        console.log(error);
+      });
+  };
 
   const handleLogin = useMutation(async (e) => {
     e.preventDefault();
@@ -66,6 +86,7 @@ export default function AuthModal() {
       .then((response) => {
         const user = response.data.data;
         if (response.status === 200) {
+          fetchCarts();
           closeModal();
           userDispatch({
             type: "LOGIN_SUCCESS",
