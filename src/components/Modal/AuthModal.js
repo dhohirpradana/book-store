@@ -86,12 +86,12 @@ export default function AuthModal() {
       .then((response) => {
         const user = response.data.data;
         if (response.status === 200) {
-          fetchCarts();
           closeModal();
           userDispatch({
             type: "LOGIN_SUCCESS",
             payload: user,
           });
+          fetchCarts();
         }
       })
       .catch((error) => {
