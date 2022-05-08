@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react-query": "^3.38.1",
+    "svgo": "^2.8.0",
     "@develoka/angka-rupiah-js": "^1.0.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
