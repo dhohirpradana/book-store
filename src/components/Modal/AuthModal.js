@@ -118,13 +118,8 @@ export default function AuthModal() {
 
     await API.post("/register", body, config)
       .then((response) => {
-        const user = response.data.data;
         if (response.status === 201) {
           closeModal();
-          userDispatch({
-            type: "LOGIN_SUCCESS",
-            payload: user,
-          });
         }
       })
       .catch((error) => {
