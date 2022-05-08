@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Container, Divider, Stack, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import toRupiah from "@develoka/angka-rupiah-js";
@@ -14,7 +14,8 @@ export default function Cart() {
   const [cartContext, cartDispatch] = useContext(CartContext);
   const [carts, setcarts] = useState([]);
 
-  const fetchCarts = async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchCarts = useCallback(async () => {
     await API.get("/carts")
       .then((response) => {
         cartDispatch({
@@ -46,12 +47,11 @@ export default function Cart() {
         });
         console.log(error);
       });
-  };
+  });
 
   useEffect(() => {
     fetchCarts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchCarts]);
 
   return (
     <Container sx={{ paddingX: 2 }}>
@@ -76,6 +76,7 @@ export default function Cart() {
             carts.map((cart) => {
               return (
                 <Order
+                  id={cart.id}
                   image={cart.book.image}
                   author={cart.book.author}
                   title={cart.book.title}
@@ -83,6 +84,7 @@ export default function Cart() {
                   price={cart.book.price}
                   isEbook={cart.book.isEbook}
                   key={cart.id}
+                  onClick={fetchCarts}
                 />
               );
             })

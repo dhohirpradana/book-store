@@ -18,7 +18,7 @@ import { Box } from "@mui/material";
 import Transaction from "./pages/Transaction";
 import { API, setAuthToken } from "./configs/api";
 import PrivateRoute from "./pages/PrivateRoute";
-import { CartContext } from "./contexts/cart";
+import useCart from "./hooks/cart";
 const bgImage = require("./assets/image/background.png");
 
 if (localStorage.token) {
@@ -27,8 +27,7 @@ if (localStorage.token) {
 
 function App() {
   const [userContext, userDispatch] = useContext(UserContext);
-  // eslint-disable-next-line no-unused-vars
-  const [cartContext, cartDispatch] = useContext(CartContext);
+  const { fetchCarts } = useCart();
 
   const checkUser = async () => {
     await API.get("/me")
@@ -45,23 +44,6 @@ function App() {
       .catch((error) => {
         userDispatch({
           type: "AUTH_ERROR",
-        });
-        console.log(error);
-      });
-  };
-
-  const fetchCarts = async () => {
-    await API.get("/carts")
-      .then((response) => {
-        // console.log(response.data.data.carts);
-        cartDispatch({
-          type: "ADD_CART",
-          payload: response.data.data.carts.length,
-        });
-      })
-      .catch((error) => {
-        cartDispatch({
-          type: "CLEAR_CART",
         });
         console.log(error);
       });
