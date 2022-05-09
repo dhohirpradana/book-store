@@ -40,33 +40,36 @@ export default function Complain() {
   var socketServer =
     process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
 
-  useEffect(() => {
-    socket = io(socketServer, {
-      auth: {
-        token: localStorage.getItem("token"),
-      },
-    });
+  useEffect(
+    () => {
+      socket = io(socketServer, {
+        auth: {
+          token: localStorage.getItem("token"),
+        },
+      });
 
-    loadContacts();
-    loadMessages();
+      loadContacts();
+      loadMessages();
 
-    socket.on("new message", () => {
-      console.log("new message");
-      console.log(contact);
-      socket.emit("load messages", contact);
-      scrollToBottom();
-    });
+      socket.on("new message", () => {
+        console.log("new message");
+        console.log(contact);
+        socket.emit("load messages", contact);
+        scrollToBottom();
+      });
 
-    // listen error sent from server
-    socket.on("connect_error", (err) => {
-      console.error(err.message); // not authorized
-    });
+      // listen error sent from server
+      socket.on("connect_error", (err) => {
+        console.error(err.message); // not authorized
+      });
 
-    return () => {
-      socket.disconnect();
-    };
+      return () => {
+        socket.disconnect();
+      };
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+    userContext.user.role === "admin" ? [messages] : []
+  );
 
   const loadContacts = () => {
     console.log("dipanggil");
