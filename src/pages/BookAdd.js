@@ -43,6 +43,7 @@ export default function ProductAdd() {
       formData.set("desc", form.current.desc.value);
       formData.set("price", form.current.price.value);
       formData.set("qty", form.current.qty.value);
+      formData.set("isbn", form.current.isbn.value);
 
       const response = await API.post(`/book`, formData, config);
 

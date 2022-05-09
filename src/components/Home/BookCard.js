@@ -29,7 +29,12 @@ export default function BookCard({
           textAlign="start"
           spacing={{ xs: 1, sm: 1, md: 1 }}
         >
-          <Image width={185} src={image || noImage} />
+          <Image
+            style={{ objectFit: "cover" }}
+            width={200}
+            height={240}
+            src={image || noImage}
+          />
           <div>
             <Link
               to={"/book-detail/" + encryptedId}
