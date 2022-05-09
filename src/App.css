@@ -81,3 +81,14 @@ body::-webkit-scrollbar-thumb {
   line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
