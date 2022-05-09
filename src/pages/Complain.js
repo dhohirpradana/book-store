@@ -33,9 +33,13 @@ export default function Complain() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, []);
+  useEffect(
+    () => {
+      scrollToBottom();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    userContext.user.role === "admin" ? [messages] : []
+  );
 
   var socketServer =
     process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
@@ -55,7 +59,6 @@ export default function Complain() {
         console.log("new message");
         console.log(contact);
         socket.emit("load messages", contact);
-        scrollToBottom();
       });
 
       // listen error sent from server
@@ -119,6 +122,7 @@ export default function Complain() {
           message: item.message,
         }));
         setMessages(dataMessages);
+        scrollToBottom();
       } else {
         setMessages([messages]);
       }
