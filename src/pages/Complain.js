@@ -99,6 +99,7 @@ export default function Complain() {
     if (contact && contact.id !== data.id)
       socket.emit("load messages", data.id);
     setContact(data);
+    console.log(contact)
   };
 
   const loadMessages = () => {
@@ -142,16 +143,16 @@ export default function Complain() {
             component="nav"
             aria-label="mailbox folders"
           >
-            {contacts.map((contact) => (
-              <div key={contact.id}>
+            {contacts.map((contactData) => (
+              <div key={contactData.id}>
                 <ListItem
                   sx={{ borderRadius: 1 }}
                   button
-                  onClick={() => onClickContact(contact)}
+                  onClick={() => onClickContact(contactData)}
                 >
                   <Stack direction="row" alignItems="center">
                     <Avatar sx={{ mr: 1.5 }} src={manProfile} />
-                    <ListItemText primary={contact.name} />
+                    <ListItemText primary={contactData.name} />
                   </Stack>
                 </ListItem>
                 <Divider />
