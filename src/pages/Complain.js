@@ -35,7 +35,7 @@ export default function Complain() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, []);
 
   var socketServer =
     process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
@@ -68,7 +68,7 @@ export default function Complain() {
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    userContext.user.role === "admin" ? [messages] : []
+    [messages]
   );
 
   const loadContacts = () => {
