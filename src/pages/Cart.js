@@ -95,7 +95,7 @@ export default function Cart() {
           destination: userContext.user.address.cityId,
           origin: b.address.city.id,
           courierCost: 21000,
-          transactionId: userContext.user + "-" + uuid + "-" + b.userId,
+          transactionId: b.id + "b" + uuid + "s" + b.userId,
           subTotal: subtotal,
         };
 
