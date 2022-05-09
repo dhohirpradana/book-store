@@ -124,7 +124,7 @@ export default function Home() {
         LeftArrow={LeftArrow}
         RightArrow={RightArrow}
       >
-        {books.map(({ id, title, image, author, desc }) => (
+        {books.map(({ id, title, image, author, desc,price }) => (
           <PromoCard
             width={width}
             classes={classes}
@@ -133,6 +133,7 @@ export default function Home() {
             author={author}
             image={image}
             desc={desc}
+            price={price}
             key={id}
             onClick={() => handleClick(id)}
           />

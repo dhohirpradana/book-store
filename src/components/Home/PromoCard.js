@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // import bookUS from "../../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
 import noImage from "../../assets/image/no image.png";
 import useCrypto from "../../hooks/crypto";
+import toRupiah from "@develoka/angka-rupiah-js";
 
 export default function PromoCard({
   width,
@@ -16,6 +17,7 @@ export default function PromoCard({
   title,
   itemId,
   author,
+  price,
 }) {
   const { encryptId } = useCrypto();
   const encryptedId = encryptId(itemId);
@@ -57,7 +59,7 @@ export default function PromoCard({
               fontWeight="bold"
               fontSize={18}
             >
-              Rp.58.000
+              Rp. {toRupiah(price, { symbol: "", floatingPoint: 0 })}
             </Typography>
             <Button
               variant="dark"
