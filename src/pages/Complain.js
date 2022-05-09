@@ -79,7 +79,7 @@ export default function Complain() {
         // if (dataContact.length > 0) {
         setContact(dataContact[0]);
         socket.emit("load messages", dataContact[0].id);
-        console.log(contact)
+        console.log(contact);
         // }
         // console.log(dataContact);
       });
@@ -96,10 +96,10 @@ export default function Complain() {
   };
 
   const onClickContact = (data) => {
+    setContact(data);
     if (contact && contact.id !== data.id)
       socket.emit("load messages", data.id);
-    setContact(data);
-    console.log(contact)
+    console.log(contact);
   };
 
   const loadMessages = () => {
