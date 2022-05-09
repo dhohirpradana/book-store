@@ -65,7 +65,7 @@ export default function Complain() {
     return () => {
       socket.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   const loadContacts = () => {
@@ -172,102 +172,119 @@ export default function Complain() {
         <></>
       )}
 
-      <Stack width="100%">
+      {!name ? (
         <Container
           sx={{
-            backgroundColor: "#C4C4C4",
+            backgroundColor: "#E5E5E5",
             width: "100%",
-            borderTopLeftRadius: "5px",
-            borderTopRightRadius: "5px",
+            height: "82vh",
+            borderRadius: "5px",
             p: 2,
+            textAlign: "center",
           }}
         >
-          <Stack direction="row" alignItems="center">
-            {!name ? (
-              <></>
-            ) : (
-              <>
-                <Avatar src={manProfile} />
-                <Stack pl={2}>
-                  <Typography>{name}</Typography>
-                  <Stack direction="row" alignItems="center">
-                    <FiberManualRecordIcon color="success" fontSize="5" />
-                    <Typography fontSize={12} color="#595959">
-                      Online
-                    </Typography>
+          No Message
+        </Container>
+      ) : (
+        <>
+          <Stack width="100%">
+            <Container
+              sx={{
+                backgroundColor: "#C4C4C4",
+                width: "100%",
+                borderTopLeftRadius: "5px",
+                borderTopRightRadius: "5px",
+                p: 2,
+              }}
+            >
+              <Stack direction="row" alignItems="center">
+                <>
+                  <Avatar src={manProfile} />
+                  <Stack pl={2}>
+                    <Typography>{name}</Typography>
+                    <Stack direction="row" alignItems="center">
+                      <FiberManualRecordIcon color="success" fontSize="5" />
+                      <Typography fontSize={12} color="#595959">
+                        Online
+                      </Typography>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </>
-            )}
-          </Stack>
-        </Container>
-        <Container
-          sx={{
-            backgroundColor: "#DFDFDF",
-            width: "100%",
-            height: "72vh",
-            borderBottomLeftRadius: "5px",
-            borderBottomRightRadius: "5px",
-          }}
-        >
-          <Stack
-            gap={1}
-            width="100%"
-            height="100%"
-            maxHeight="63vh"
-            className="overflow-auto example"
-            pt={1}
-          >
-            {messages.map((chat) => (
-              <Paper
-                key={chat.id}
-                elevation={1}
-                sx={{
-                  px: 2,
-                  py: 1,
-                  alignSelf: chat.sender === contact ? "start" : "end",
-                  maxWidth: "45%",
-                }}
+                </>
+              </Stack>
+            </Container>
+            <Container
+              sx={{
+                backgroundColor: "#DFDFDF",
+                width: "100%",
+                height: "72vh",
+                borderBottomLeftRadius: "5px",
+                borderBottomRightRadius: "5px",
+              }}
+            >
+              <Stack
+                gap={1}
+                width="100%"
+                height="100%"
+                maxHeight="63vh"
+                className="overflow-auto example"
+                pt={1}
               >
-                {chat.message}
-              </Paper>
-            ))}
-            <div ref={messagesEndRef} />
+                {messages.map((chat) =>
+                  chat.message ? (
+                    <Paper
+                      key={chat.id}
+                      elevation={1}
+                      sx={{
+                        px: 2,
+                        py: 1,
+                        alignSelf: chat.sender === contact ? "start" : "end",
+                        maxWidth: "45%",
+                      }}
+                    >
+                      {chat.message}
+                    </Paper>
+                  ) : (
+                    <></>
+                  )
+                )}
+                <div ref={messagesEndRef} />
+              </Stack>
+              <TextField
+                variant="standard"
+                margin="normal"
+                required
+                fullWidth
+                id="message"
+                name="message"
+                autoFocus
+                placeholder="Message here"
+                sx={{
+                  backgroundColor: "#C4C4C4",
+                  borderRadius: 2,
+                  px: 1.5,
+                  py: 0.5,
+                  mt: 0,
+                }}
+                onChange={(e) => setMsg(e.target.value)}
+                value={msg}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        onSendMessage(msg);
+                        setMsg("");
+                      }}
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  ),
+                  disableUnderline: true,
+                }}
+              />
+            </Container>
           </Stack>
-          <TextField
-            variant="standard"
-            margin="normal"
-            required
-            fullWidth
-            id="message"
-            name="message"
-            autoFocus
-            placeholder="Message here"
-            sx={{
-              backgroundColor: "#C4C4C4",
-              borderRadius: 2,
-              px: 1.5,
-              py: 0.5,
-              mt: 0,
-            }}
-            onChange={(e) => setMsg(e.target.value)}
-            value={msg}
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={() => {
-                    onSendMessage(msg);
-                    setMsg("");
-                  }}
-                >
-                  <SendIcon />
-                </IconButton>
-              ),
-              disableUnderline: true,
-            }}
-          />
-        </Container>
-      </Stack>
+        </>
+      )}
     </Stack>
   );
 }
