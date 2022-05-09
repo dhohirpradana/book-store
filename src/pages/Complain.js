@@ -52,7 +52,7 @@ export default function Complain() {
     socket.on("new message", () => {
       console.log("new message");
       console.log(contact);
-      socket.emit("load messages", 7);
+      socket.emit("load messages", contact.id);
       scrollToBottom();
     });
 
