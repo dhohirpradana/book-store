@@ -22,7 +22,7 @@ let socket;
 
 export default function Complain() {
   const [msg, setMsg] = useState("");
-  const [contact, setContact] = useState(null);
+  const [contact, setContact] = useState();
   const [name, setName] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -47,6 +47,9 @@ export default function Complain() {
       },
     });
 
+    loadContacts();
+    loadMessages();
+
     socket.on("new message", () => {
       console.log("new message");
       console.log(contact);
@@ -59,14 +62,11 @@ export default function Complain() {
       console.error(err.message); // not authorized
     });
 
-    loadContacts();
-    loadMessages();
-
     return () => {
       socket.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   const loadContacts = () => {
     console.log("dipanggil");
@@ -98,10 +98,11 @@ export default function Complain() {
     }
   };
 
-  const onClickContact = (data) => {
-    if (contact !== data.id) socket.emit("load messages", data.id);
-    setContact(data.id);
-    setName(data.name);
+  const onClickContact = (id, cName) => {
+    if (contact !== id) socket.emit("load messages", id);
+    console.log(id);
+    setContact(id);
+    setName(cName);
     console.log(contact);
   };
 
@@ -153,7 +154,9 @@ export default function Complain() {
                   key={contactData.id}
                   sx={{ borderRadius: 1 }}
                   button
-                  onClick={() => onClickContact(contactData)}
+                  onClick={() =>
+                    onClickContact(contactData.id, contactData.name)
+                  }
                 >
                   <Stack direction="row" alignItems="center">
                     <Avatar sx={{ mr: 1.5 }} src={manProfile} />
