@@ -11,7 +11,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { API } from "../configs/api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -23,6 +24,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
+
+let status = "pending";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -40,36 +43,36 @@ function createData(user, product, total, status) {
 
 const rows = [
   createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "pending"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "cancel"),
 ];
 
 export default function Transaction() {
+  const [transactions, setTransaction] = useState([]);
+  const fetchCarts = async () => {
+    await API.get("/transactions")
+      .then((response) => {
+        // console.log(response.data);
+        const result = response.data.data.transactions
+          .reduce((r, { transactionId, ...elements }) => {
+            console.log(elements)
+            if (r.get(transactionId)) r.get(transactionId);
+            else r.set(transactionId, { transactionId, ...elements });
+            return r;
+          }, new Map())
+          .values();
+
+        // console.log([...result]);
+        setTransaction([...result]);
+        console.log(transactions[0])
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchCarts();
+  }, []);
+
   return (
     <Container>
       <Typography
@@ -97,7 +100,7 @@ export default function Transaction() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {transactions.map((trans, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell
                   component="th"
@@ -107,32 +110,32 @@ export default function Transaction() {
                   {index + 1}
                 </StyledTableCell>
                 <StyledTableCell sx={{ fontWeight: 500 }}>
-                  {row.user}
+                  {trans.buyer.name}
                 </StyledTableCell>
                 <StyledTableCell sx={{ fontWeight: 500 }}>
-                  {row.product}
+                  {trans.book.title}
                 </StyledTableCell>
                 <StyledTableCell
                   sx={{
                     fontWeight: 500,
-                    color: row.status === "approve" ? "#0ACF83" : "#FF0742",
+                    color: status === "success" ? "#0ACF83" : "#FF0742",
                   }}
                 >
-                  Rp. {row.total}
+                  Rp. {trans.price}
                 </StyledTableCell>
                 <StyledTableCell
                   sx={{
                     fontWeight: 500,
                     textTransform: "capitalize",
                     color:
-                      row.status === "approve"
+                      status === "success"
                         ? "#0ACF83"
-                        : row.status === "pending"
+                        : status === "pending"
                         ? "#F7941E"
                         : "#FF0742",
                   }}
                 >
-                  {row.status}
+                  {status}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
