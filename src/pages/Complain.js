@@ -46,9 +46,6 @@ export default function Complain() {
       },
     });
 
-    loadContacts();
-    loadMessages();
-
     socket.on("new message", () => {
       console.log("new message");
       console.log(contact);
@@ -60,6 +57,9 @@ export default function Complain() {
     socket.on("connect_error", (err) => {
       console.error(err.message); // not authorized
     });
+
+    loadContacts();
+    loadMessages();
 
     return () => {
       socket.disconnect();
@@ -76,10 +76,11 @@ export default function Complain() {
           message: "Click here to start message",
         }));
         setContacts(dataContact);
-        if (dataContact.length) {
-          setContact(dataContact[0]);
-          socket.emit("load messages", dataContact[0].id);
-        }
+        // if (dataContact.length > 0) {
+        setContact(dataContact[0]);
+        socket.emit("load messages", dataContact[0].id);
+        console.log(contact)
+        // }
         // console.log(dataContact);
       });
     } else {
@@ -102,7 +103,7 @@ export default function Complain() {
 
   const loadMessages = () => {
     socket.on("messages", (data) => {
-      console.log(data);
+      // console.log(data);
       if (data.length > 0) {
         const dataMessages = data.map((item) => ({
           senderId: item.senderId,
