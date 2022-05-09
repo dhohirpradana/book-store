@@ -28,6 +28,7 @@ specifiers:
   socket.io-client: ^4.5.0
   styled-components: ^5.3.5
   svgo: ^2.8.0
+  uuid: ^8.3.2
   web-vitals: ^2.1.0
 
 dependencies:
@@ -58,6 +59,7 @@ dependencies:
   socket.io-client: 4.5.0
   styled-components: 5.3.5_ef5jwxihqo6n7gxfmzogljlgcm
   svgo: 2.8.0
+  uuid: 8.3.2
   web-vitals: 2.1.4
 
 packages:

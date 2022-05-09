@@ -5,6 +5,9 @@ import toRupiah from "@develoka/angka-rupiah-js";
 import { CartContext } from "../contexts/cart";
 import { API } from "../configs/api";
 import Order from "../components/Cart/Order";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/user";
+const { v4: uuidv4 } = require("uuid");
 
 export default function Cart() {
   const [subtotal, setSubtotal] = useState(0);
@@ -12,7 +15,9 @@ export default function Cart() {
   const [withOngkir, setWithOngkir] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [cartContext, cartDispatch] = useContext(CartContext);
+  const [userContext] = useContext(UserContext);
   const [carts, setcarts] = useState([]);
+  const navigate = useNavigate();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchCarts = useCallback(async () => {
@@ -51,7 +56,83 @@ export default function Cart() {
 
   useEffect(() => {
     fetchCarts();
-  }, [fetchCarts]);
+  }, []);
+
+  useEffect(() => {
+    const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+    const myMidtransClientKey =
+      process.env.REACT_APP_MIDTRANS_CLIENT_KEY ||
+      "SB-Mid-client-hPSqcfwJkY6Qc8ky";
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    document.body.appendChild(scriptTag);
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCheckOut = async () => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const uuid = uuidv4();
+    await API.get("/book/" + carts[0].book.id, config).then(
+      async (response) => {
+        const b = response.data.data.book;
+        console.log(b);
+        console.log(userContext.user.address.cityId);
+        const data = {
+          bookId: b.id,
+          sellerId: b.userId,
+          price: b.price,
+          courier: "jne",
+          destination: userContext.user.address.cityId,
+          origin: b.address.city.id,
+          courierCost: 21000,
+          transactionId: userContext.user + "-" + uuid + "-" + b.userId,
+          subTotal: subtotal,
+        };
+
+        const body = JSON.stringify(data);
+
+        const config = {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+        await API.post("/transaction", body, config)
+          .then((response) => {
+            const token = response.data.payment.token;
+            window.snap.pay(token, {
+              onSuccess: function (result) {
+                console.log(result);
+                navigate("/profile");
+              },
+              onPending: function (result) {
+                console.log(result);
+                navigate("/profile");
+              },
+              onError: function (result) {
+                console.log(result);
+              },
+              onClose: function () {
+                alert("you closed the popup without finishing the payment");
+              },
+            });
+          })
+          .catch((error) => {
+            console.log(error.response.data.error.message);
+          });
+      }
+    );
+  };
 
   return (
     <Container sx={{ paddingX: 2 }}>
@@ -141,7 +222,11 @@ export default function Cart() {
               {toRupiah(subtotal, { symbol: "", floatingPoint: 0 })}
             </Typography>
           </Stack>
-          <Button disabled={cartContext.cartCount === 0} variant="dark">
+          <Button
+            disabled={cartContext.cartCount === 0}
+            variant="dark"
+            onClick={handleCheckOut}
+          >
             Check Out
           </Button>
         </Stack>
