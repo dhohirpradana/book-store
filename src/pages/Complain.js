@@ -35,10 +35,10 @@ export default function Complain() {
 
   useEffect(
     () => {
-      scrollToBottom();
+      if (userContext.user.role !== "admin") scrollToBottom();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    userContext.user.role === "admin" ? [messages] : []
+    [messages]
   );
 
   var socketServer =
@@ -52,19 +52,20 @@ export default function Complain() {
         },
       });
 
-      loadContacts();
-      loadMessages();
-
       socket.on("new message", () => {
         console.log("new message");
         console.log(contact);
         socket.emit("load messages", contact);
+        scrollToBottom();
       });
 
       // listen error sent from server
       socket.on("connect_error", (err) => {
         console.error(err.message); // not authorized
       });
+
+      loadContacts();
+      loadMessages();
 
       return () => {
         socket.disconnect();
@@ -110,6 +111,7 @@ export default function Complain() {
     setContact(id);
     setName(cName);
     console.log(contact);
+    scrollToBottom();
   };
 
   const loadMessages = () => {
@@ -122,10 +124,10 @@ export default function Complain() {
           message: item.message,
         }));
         setMessages(dataMessages);
-        scrollToBottom();
       } else {
         setMessages([messages]);
       }
+      scrollToBottom();
     });
   };
 
@@ -136,6 +138,7 @@ export default function Complain() {
       message: msg,
     };
     socket.emit("send message", data);
+    scrollToBottom();
   };
 
   return (
@@ -244,7 +247,8 @@ export default function Complain() {
                       sx={{
                         px: 2,
                         py: 1,
-                        alignSelf: chat.sender === userContext.user.id ? "start" : "end",
+                        alignSelf:
+                          chat.senderId === userContext.user.id ? "end" : "start",
                         maxWidth: "45%",
                       }}
                     >
