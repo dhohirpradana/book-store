@@ -51,18 +51,17 @@ export default function Transaction() {
     await API.get("/transactions")
       .then((response) => {
         // console.log(response.data);
-        const result = response.data.data.transactions
-          .reduce((r, { transactionId, ...elements }) => {
-            console.log(elements)
-            if (r.get(transactionId)) r.get(transactionId);
-            else r.set(transactionId, { transactionId, ...elements });
-            return r;
-          }, new Map())
-          .values();
+        // const result = response.data.data.transactions
+        //   .reduce((r, { transactionId, ...elements }) => {
+        //     console.log(elements)
+        //     if (r.get(transactionId)) r.get(transactionId);
+        //     else r.set(transactionId, { transactionId, ...elements });
+        //     return r;
+        //   }, new Map())
+        //   .values();
 
         // console.log([...result]);
-        setTransaction([...result]);
-        console.log(transactions[0])
+        setTransaction(response.data.data.transactions);
       })
       .catch((error) => {
         console.log(error);
@@ -121,7 +120,7 @@ export default function Transaction() {
                     color: status === "success" ? "#0ACF83" : "#FF0742",
                   }}
                 >
-                  Rp. {trans.price}
+                  Rp. {trans.book.price}
                 </StyledTableCell>
                 <StyledTableCell
                   sx={{

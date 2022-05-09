@@ -107,7 +107,7 @@ export default function Cart() {
           },
         };
         await API.post("/transaction", body, config)
-          .then((response) => {
+          .then(async (response) => {
             const token = response.data.payment.token;
             if (index === carts.length - 1)
               window.snap.pay(token, {
@@ -126,9 +126,14 @@ export default function Cart() {
                   alert("you closed the popup without finishing the payment");
                 },
               });
+            await API.delete("/carts")
+              .then((response) => {})
+              .catch((error) => {
+                console.log(error.response);
+              });
           })
           .catch((error) => {
-            console.log(error.response.data.error.message);
+            console.log(error.response.data);
           });
       });
     });
