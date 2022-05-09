@@ -34,7 +34,7 @@ export default function PromoCard({
             <Image
               style={{ objectFit: "cover" }}
               width={200}
-              height={270}
+              height={240}
               src={image || noImage}
             />
           </div>
