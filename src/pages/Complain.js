@@ -21,10 +21,9 @@ import { io } from "socket.io-client";
 let socket;
 
 export default function Complain() {
-  let contact = null;
   const [msg, setMsg] = useState("");
-  // const [contact, setContact] = useState(null);
-  const [adminName, setAdminName] = useState(null);
+  const [contact, setContact] = useState(null);
+  const [name, setName] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userContext, userDispatch] = useContext(UserContext);
@@ -70,6 +69,7 @@ export default function Complain() {
   }, []);
 
   const loadContacts = () => {
+    console.log("dipanggil");
     if (userContext.user.role !== "admin") {
       socket.emit("load admin contact");
       socket.on("admin contact", (data) => {
@@ -79,8 +79,8 @@ export default function Complain() {
         }));
         setContacts(dataContact);
         // if (dataContact.length > 0) {
-        contact = dataContact[0].id;
-        setAdminName(dataContact[0].name);
+        setContact(dataContact[0].id);
+        setName(dataContact[0].name);
         socket.emit("load messages", dataContact[0].id);
         console.log(contact);
         // }
@@ -100,7 +100,8 @@ export default function Complain() {
 
   const onClickContact = (data) => {
     if (contact !== data.id) socket.emit("load messages", data.id);
-    contact = data.id;
+    setContact(data.id);
+    setName(data.name);
     console.log(contact);
   };
 
@@ -179,13 +180,13 @@ export default function Complain() {
           }}
         >
           <Stack direction="row" alignItems="center">
-            {!contact ? (
+            {!name ? (
               <></>
             ) : (
               <>
                 <Avatar src={manProfile} />
                 <Stack pl={2}>
-                  <Typography>{adminName}</Typography>
+                  <Typography>{name}</Typography>
                   <Stack direction="row" alignItems="center">
                     <FiberManualRecordIcon color="success" fontSize="5" />
                     <Typography fontSize={12} color="#595959">
