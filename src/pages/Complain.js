@@ -21,8 +21,10 @@ import { io } from "socket.io-client";
 let socket;
 
 export default function Complain() {
+  let contact = null;
   const [msg, setMsg] = useState("");
-  const [contact, setContact] = useState(null);
+  // const [contact, setContact] = useState(null);
+  const [adminName, setAdminName] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userContext, userDispatch] = useContext(UserContext);
@@ -49,7 +51,7 @@ export default function Complain() {
     socket.on("new message", () => {
       console.log("new message");
       console.log(contact);
-      socket.emit("load messages", contact.id);
+      socket.emit("load messages", contact);
       scrollToBottom();
     });
 
@@ -77,7 +79,8 @@ export default function Complain() {
         }));
         setContacts(dataContact);
         // if (dataContact.length > 0) {
-        setContact(dataContact[0]);
+        contact = dataContact[0].id;
+        setAdminName(dataContact[0].name);
         socket.emit("load messages", dataContact[0].id);
         console.log(contact);
         // }
@@ -96,9 +99,8 @@ export default function Complain() {
   };
 
   const onClickContact = (data) => {
-    setContact(data);
-    if (contact && contact.id !== data.id)
-      socket.emit("load messages", data.id);
+    if (contact !== data.id) socket.emit("load messages", data.id);
+    contact = data.id;
     console.log(contact);
   };
 
@@ -119,8 +121,9 @@ export default function Complain() {
   };
 
   const onSendMessage = (msg) => {
+    console.log(contact);
     const data = {
-      recipientId: contact.id,
+      recipientId: contact,
       message: msg,
     };
     socket.emit("send message", data);
@@ -146,6 +149,7 @@ export default function Complain() {
             {contacts.map((contactData) => (
               <div key={contactData.id}>
                 <ListItem
+                  key={contactData.id}
                   sx={{ borderRadius: 1 }}
                   button
                   onClick={() => onClickContact(contactData)}
@@ -175,16 +179,22 @@ export default function Complain() {
           }}
         >
           <Stack direction="row" alignItems="center">
-            <Avatar src={manProfile} />
-            <Stack pl={2}>
-              <Typography>{!contact ? "" : contact.name}</Typography>
-              <Stack direction="row" alignItems="center">
-                <FiberManualRecordIcon color="success" fontSize="5" />
-                <Typography fontSize={12} color="#595959">
-                  Online
-                </Typography>
-              </Stack>
-            </Stack>
+            {!contact ? (
+              <></>
+            ) : (
+              <>
+                <Avatar src={manProfile} />
+                <Stack pl={2}>
+                  <Typography>{adminName}</Typography>
+                  <Stack direction="row" alignItems="center">
+                    <FiberManualRecordIcon color="success" fontSize="5" />
+                    <Typography fontSize={12} color="#595959">
+                      Online
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </>
+            )}
           </Stack>
         </Container>
         <Container
@@ -211,7 +221,7 @@ export default function Complain() {
                 sx={{
                   px: 2,
                   py: 1,
-                  alignSelf: chat.sender === contact.id ? "start" : "end",
+                  alignSelf: chat.sender === contact ? "start" : "end",
                   maxWidth: "45%",
                 }}
               >
