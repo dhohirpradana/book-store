@@ -54,11 +54,10 @@ export default function Cart() {
       });
   });
 
-  useEffect(() => {
-    fetchCarts();
-  }, []);
+  // useEffect(() => {}, []);
 
   useEffect(() => {
+    fetchCarts();
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
     const myMidtransClientKey =
       process.env.REACT_APP_MIDTRANS_CLIENT_KEY ||
@@ -75,15 +74,15 @@ export default function Cart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCheckOut = async () => {
+  const handleCheckOut = () => {
     const config = {
       headers: {
         "Content-type": "application/json",
       },
     };
     const uuid = uuidv4();
-    await API.get("/book/" + carts[0].book.id, config).then(
-      async (response) => {
+    carts.map(async (cart, index) => {
+      await API.get("/book/" + cart.book.id, config).then(async (response) => {
         const b = response.data.data.book;
         console.log(b);
         console.log(userContext.user.address.cityId);
@@ -110,28 +109,29 @@ export default function Cart() {
         await API.post("/transaction", body, config)
           .then((response) => {
             const token = response.data.payment.token;
-            window.snap.pay(token, {
-              onSuccess: function (result) {
-                console.log(result);
-                navigate("/profile");
-              },
-              onPending: function (result) {
-                console.log(result);
-                navigate("/profile");
-              },
-              onError: function (result) {
-                console.log(result);
-              },
-              onClose: function () {
-                alert("you closed the popup without finishing the payment");
-              },
-            });
+            if (index === carts.length - 1)
+              window.snap.pay(token, {
+                onSuccess: function (result) {
+                  console.log(result);
+                  navigate("/profile");
+                },
+                onPending: function (result) {
+                  console.log(result);
+                  navigate("/profile");
+                },
+                onError: function (result) {
+                  console.log(result);
+                },
+                onClose: function () {
+                  alert("you closed the popup without finishing the payment");
+                },
+              });
           })
           .catch((error) => {
             console.log(error.response.data.error.message);
           });
-      }
-    );
+      });
+    });
   };
 
   return (

@@ -31,7 +31,12 @@ export default function PromoCard({
           spacing={{ xs: 1, sm: 2, md: 2 }}
         >
           <div>
-            <Image width={185} src={image || noImage} />
+            <Image
+              style={{ objectFit: "cover" }}
+              width={150}
+              height={270}
+              src={image || noImage}
+            />
           </div>
           <div className={classes.productRight}>
             <Link

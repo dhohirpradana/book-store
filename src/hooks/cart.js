@@ -24,8 +24,8 @@ export default function useCart() {
 
   const deleteCart = async (cartId) => {
     await API.delete("/cart/" + cartId)
-      .then((response) => {
-        // fetchCarts();
+      .then(() => {
+        fetchCarts();
       })
       .catch((error) => {
         console.log(error);
