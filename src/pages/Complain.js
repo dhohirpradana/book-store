@@ -244,7 +244,7 @@ export default function Complain() {
                       sx={{
                         px: 2,
                         py: 1,
-                        alignSelf: chat.sender === contact ? "start" : "end",
+                        alignSelf: chat.sender === userContext.user.id ? "start" : "end",
                         maxWidth: "45%",
                       }}
                     >
