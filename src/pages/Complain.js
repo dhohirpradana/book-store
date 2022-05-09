@@ -46,6 +46,9 @@ export default function Complain() {
       },
     });
 
+    loadContacts();
+    loadMessages();
+
     socket.on("new message", () => {
       console.log("new message");
       console.log(contact);
@@ -57,9 +60,6 @@ export default function Complain() {
     socket.on("connect_error", (err) => {
       console.error(err.message); // not authorized
     });
-
-    loadContacts();
-    loadMessages();
 
     return () => {
       socket.disconnect();
@@ -95,9 +95,9 @@ export default function Complain() {
   };
 
   const onClickContact = (data) => {
-    setContact(data);
     if (contact && contact.id !== data.id)
       socket.emit("load messages", data.id);
+    setContact(data);
   };
 
   const loadMessages = () => {
