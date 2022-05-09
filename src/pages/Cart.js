@@ -165,7 +165,7 @@ export default function Cart() {
                   price={cart.book.price}
                   isEbook={cart.book.isEbook}
                   key={cart.id}
-                  onClick={fetchCarts}
+                  onClick={() => fetchCarts()}
                 />
               );
             })
