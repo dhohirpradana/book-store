@@ -3,6 +3,8 @@ import React from "react";
 import { Image } from "react-bootstrap";
 import noImage from "../../assets/image/no image.png";
 import toRupiah from "@develoka/angka-rupiah-js";
+import { Link } from "react-router-dom";
+import useCrypto from "../../hooks/crypto";
 
 export default function BookCard({
   width,
@@ -16,6 +18,8 @@ export default function BookCard({
   sold,
   author,
 }) {
+  const { encryptId } = useCrypto();
+  const encryptedId = encryptId(itemId);
   return (
     <Card elevation={0}>
       <CardContent>
@@ -27,13 +31,18 @@ export default function BookCard({
         >
           <Image width={185} src={image || noImage} />
           <div>
-            <Typography
-              fontSize={20}
-              fontWeight="bold"
-              textTransform="capitalize"
+            <Link
+              to={"/book-detail/" + encryptedId}
+              style={{ textDecoration: "none", color: "black" }}
             >
-              {title}
-            </Typography>
+              <Typography
+                fontSize={20}
+                fontWeight="bold"
+                textTransform="capitalize"
+              >
+                {title}
+              </Typography>
+            </Link>
             <Typography gutterBottom color="textSecondary">
               𝐵𝓎. {author}
             </Typography>

@@ -128,6 +128,7 @@ export default function AuthModal() {
         seterror(msg);
       });
   });
+  
   return (
     <div>
       {modalContext.modalOpen === "register" ? (

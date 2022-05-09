@@ -13,6 +13,7 @@ import AuthModal from "../components/Modal/AuthModal";
 import { ModalContext } from "../contexts/authModal";
 import { UserContext } from "../contexts/user";
 import { API } from "../configs/api";
+import useCart from "../hooks/cart";
 
 const useStyles = makeStyles(() => {
   return {
@@ -39,22 +40,23 @@ const useStyles = makeStyles(() => {
 });
 
 export default function Home() {
+  const { fetchCarts } = useCart();
   const { width } = useWindowDimensions();
   const classes = useStyles(width);
-  const getItems = () =>
-    Array(24)
-      .fill(0)
-      .map((_, ind) => ({
-        id: `${ind + 1}`,
-        title: `habis gelap terbitlah terang vol ${ind + 1}`,
-        author: `Kartini`,
-        sold: Math.floor(Math.random() * 99) + 1,
-      }));
+  // const getItems = () =>
+  //   Array(24)
+  //     .fill(0)
+  //     .map((_, ind) => ({
+  //       id: `${ind + 1}`,
+  //       title: `habis gelap terbitlah terang vol ${ind + 1}`,
+  //       author: `Kartini`,
+  //       sold: Math.floor(Math.random() * 99) + 1,
+  //     }));
 
-  const [items] = useState(getItems);
+  // const [items] = useState(getItems);
   const [books, setBooks] = useState([]);
-  const [cartContext, cartDispatch] = useContext(CartContext);
-  const [userContext] = useContext(UserContext);
+  // const [cartContext, cartDispatch] = useContext(CartContext);
+  // const [userContext] = useContext(UserContext);
   // eslint-disable-next-line no-unused-vars
   const [modalContext, modalDispatch] = useContext(ModalContext);
 
@@ -67,17 +69,39 @@ export default function Home() {
       .then((response) => {
         const books = response.data.data.books;
         setBooks(books);
+        console.log(books)
       })
       .catch((error) => console.log(error));
   };
 
-  const handleClick = (id) => {
-    if (!userContext.isLogin)
-      return modalDispatch({
-        type: "MODAL_OPEN",
-        payload: "login",
+  const handleClick = async (id) => {
+    // if (!userContext.isLogin)
+    //   return modalDispatch({
+    //     type: "MODAL_OPEN",
+    //     payload: "login",
+    //   });
+    // cartDispatch({ type: "ADD_CART", payload: cartContext.cartCount + 1 });
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    const body = JSON.stringify({
+      bookId: id,
+    });
+
+    await API.post("/cart", body, config)
+      .then((response) => {
+        if (response.status === 201) {
+          console.log("first");
+          fetchCarts();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
       });
-    cartDispatch({ type: "ADD_CART", payload: cartContext.cartCount + 1 });
   };
 
   var Element = Scroll.Element;
@@ -100,14 +124,15 @@ export default function Home() {
         LeftArrow={LeftArrow}
         RightArrow={RightArrow}
       >
-        {items.map(({ id, title, sold, author }) => (
+        {books.map(({ id, title, image, author, desc }) => (
           <PromoCard
             width={width}
             classes={classes}
             itemId={id}
             title={title}
             author={author}
-            sold={sold}
+            image={image}
+            desc={desc}
             key={id}
             onClick={() => handleClick(id)}
           />

@@ -142,7 +142,7 @@ export default function Cart() {
             </Typography>
           </Stack>
           <Button disabled={cartContext.cartCount === 0} variant="dark">
-            Pay
+            Check Out
           </Button>
         </Stack>
       </Stack>

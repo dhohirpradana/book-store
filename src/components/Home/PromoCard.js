@@ -2,7 +2,8 @@ import { Card, CardContent, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import bookUS from "../../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
+// import bookUS from "../../assets/image/sincerely-media-CXYPfveiuis-unsplash.jpg";
+import noImage from "../../assets/image/no image.png";
 import useCrypto from "../../hooks/crypto";
 
 export default function PromoCard({
@@ -10,9 +11,10 @@ export default function PromoCard({
   classes,
   onClick,
   selected,
+  image,
+  desc,
   title,
   itemId,
-  sold,
   author,
 }) {
   const { encryptId } = useCrypto();
@@ -27,7 +29,7 @@ export default function PromoCard({
           spacing={{ xs: 1, sm: 2, md: 2 }}
         >
           <div>
-            <Image width={185} src={bookUS} />
+            <Image width={185} src={image || noImage} />
           </div>
           <div className={classes.productRight}>
             <Link
@@ -47,11 +49,7 @@ export default function PromoCard({
               𝐵𝓎. {author}
             </Typography>
             <Typography gutterBottom className="text" textAlign="justify">
-              Habis Gelap Terbitlah Terang adalah buku kumpulan surat yang
-              ditulis oleh Kartini. Kumpulan surat tersebut dibukukan oleh J.H.
-              Abendanon dengan judul Door Duisternis Tot Licht. Setelah Kartini
-              wafat, J.H. Abendanon mengumpulkan dan membukukan surat-surat yang
-              pernah dikirimkan R.A Kartini pada teman-temannya di Eropa.
+              {desc}
             </Typography>
             <Typography
               gutterBottom
