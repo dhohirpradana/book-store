@@ -12,6 +12,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Cart from "./pages/Cart";
 import BookDetail from "./pages/BookDetail";
+import BookAdd from "./pages/BookAdd";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./contexts/user";
 import { Box } from "@mui/material";
@@ -72,6 +73,13 @@ function App() {
             path="/"
             element={
               userContext.user.role === "admin" ? <Transaction /> : <Home />
+            }
+          />{" "}
+          <Route
+            exact
+            path="/book-add"
+            element={
+              userContext.user.role === "admin" ? <BookAdd /> : <Home />
             }
           />
           <Route element={<PrivateRoute />}>
