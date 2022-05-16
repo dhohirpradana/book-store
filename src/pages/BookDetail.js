@@ -111,7 +111,7 @@ export default function BookDetail() {
             Pages
           </Typography>
           <Typography fontWeight={500} color="gray" mb={3} fontSize={14}>
-            312
+            {book?.page || 78}
           </Typography>
           <Typography gutterBottom fontWeight={600} color="red">
             ISBN

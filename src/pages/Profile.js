@@ -13,6 +13,7 @@ import {
   DialogContentText,
   DialogActions,
   Chip,
+  Grid,
 } from "@mui/material";
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
@@ -30,6 +31,7 @@ import { useMutation } from "react-query";
 import { API } from "../configs/api";
 import { UserContext } from "../contexts/user";
 import useWindowDimensions from "../hooks/window";
+import noImage from "../assets/image/no image.png";
 
 const StyledPaper = styled(Paper)(() => ({
   backgroundColor: "#FFD9D9",
@@ -57,6 +59,7 @@ export default function Profile() {
   const { width } = useWindowDimensions();
   const [modalOpen, setOpen] = useState(false);
   const [error, seterror] = useState(null);
+  const [purchases, setPurchases] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [subDistricts, setSubDistricts] = useState([]);
@@ -70,6 +73,7 @@ export default function Profile() {
 
   useEffect(() => {
     fetchProvinces();
+    fetchPurchahses();
   }, []);
 
   const handleClickOpenDelete = () => {
@@ -113,6 +117,16 @@ export default function Profile() {
 
   const handleChangeSubDistrict = (e, value) => {
     if (value) setSubDistrict(value.id);
+  };
+
+  const fetchPurchahses = async () => {
+    await API.get("purchases")
+      .then((response) => {
+        const purchases = response.data.data.transactions;
+        console.log(purchases);
+        setPurchases(purchases);
+      })
+      .catch((error) => console.log(error));
   };
 
   const fetchProvinces = async () => {
@@ -219,7 +233,7 @@ export default function Profile() {
   });
 
   return (
-    <Container>
+    <Container sx={{ pb: 2 }}>
       <Typography
         marginTop={2}
         marginBottom={1}
@@ -305,6 +319,50 @@ export default function Profile() {
       >
         my books
       </Typography>
+      <Grid container>
+        {purchases.map((purchases) => {
+          return purchases.status === "success" ? (
+            <Grid
+              key={purchases.id}
+              justifyContent="center"
+              textAlign="center"
+              item
+              xs={6}
+              sm={6}
+              md={3}
+              lg={3}
+            >
+              <Stack alignItems="center" width="100%">
+                <Typography fontWeight="500" gutterBottom>
+                  {purchases.book.title}
+                </Typography>
+                <Image
+                  style={{ objectFit: "cover" }}
+                  width={150}
+                  height={200}
+                  src={purchases.book.image || noImage}
+                />
+                {purchases.book.isEbook ? (
+                  <Button
+                    sx={{ mt: 1, width: "170px" }}
+                    variant="outlined"
+                    size="small"
+                    href={purchases.book.document}
+                  >
+                    Download
+                  </Button>
+                ) : (
+                  <></>
+                )}
+              </Stack>
+            </Grid>
+          ) : (
+            <></>
+          );
+        })}
+      </Grid>
+
+      {/* Modal */}
       <Modal centered={width > 767} show={modalOpen} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Profile</Modal.Title>

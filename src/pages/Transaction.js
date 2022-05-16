@@ -37,14 +37,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(user, product, total, status) {
-  return { user, product, total, status };
-}
-
-const rows = [
-  createData("Dhohir Pradana", "Frozen yoghurt", "28.000", "approve"),
-];
-
 export default function Transaction() {
   const [transactions, setTransaction] = useState([]);
   const fetchCarts = async () => {

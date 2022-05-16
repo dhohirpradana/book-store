@@ -78,13 +78,11 @@ function App() {
           <Route
             exact
             path="/book-add"
-            element={
-              userContext.user.role === "admin" ? <BookAdd /> : <Home />
-            }
+            element={userContext.user.role === "admin" ? <BookAdd /> : <Home />}
           />
+          <Route exact path="/book-detail/:id" element={<BookDetail />} />
           <Route element={<PrivateRoute />}>
             <Route exact path="/profile" element={<Profile />} />
-            <Route exact path="/book-detail/:id" element={<BookDetail />} />
             <Route exact path="/cart" element={<Cart />} />
             <Route exact path="/about" element={<About />} />
             <Route exact path="/complain" element={<Complain />} />

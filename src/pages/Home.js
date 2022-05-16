@@ -69,7 +69,7 @@ export default function Home() {
       .then((response) => {
         const books = response.data.data.books;
         setBooks(books);
-        console.log(books)
+        // console.log(books)
       })
       .catch((error) => console.log(error));
   };

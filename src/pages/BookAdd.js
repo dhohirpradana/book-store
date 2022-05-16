@@ -1,3 +1,4 @@
+import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useMutation } from "react-query";
@@ -8,21 +9,23 @@ import { API } from "../configs/api";
 export default function ProductAdd() {
   const form = useRef();
   const navigate = useNavigate();
-  const [file, setFile] = useState();
+  const [image, setImage] = useState();
+  const [document, setDocument] = useState();
   const [message, setMessage] = useState();
+  const [isEbook, setIsEbook] = useState(false);
   const [preview, setPreview] = useState();
 
   useEffect(() => {
-    if (!file) {
+    if (!image) {
       setPreview(null);
       return;
     }
 
-    const objectUrl = URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(image);
     setPreview(objectUrl);
 
     return () => URL.revokeObjectURL(objectUrl);
-  }, [file]);
+  }, [image]);
 
   const handleSubmit = useMutation(async (e) => {
     setMessage(null);
@@ -36,7 +39,9 @@ export default function ProductAdd() {
       };
 
       const formData = new FormData();
-      if (file) formData.set("image", file, file.name);
+      formData.set("isEbook", +isEbook);
+      if (image) formData.set("image", image, image.name);
+      if (document) formData.set("document", document, document.name);
       formData.set("title", form.current.title.value);
       formData.set("author", form.current.author.value);
       formData.set("publicationDate", form.current.publicationDate.value);
@@ -50,7 +55,7 @@ export default function ProductAdd() {
       console.log(response);
       navigate("/");
     } catch (error) {
-      const msg = !file
+      const msg = !image
         ? error.response.data.message
         : error.response.data.error.message;
       const alert = (
@@ -120,7 +125,7 @@ export default function ProductAdd() {
               placeholder="Qty"
               className="mb-4"
             />
-            {file && (
+            {image && (
               <img src={preview} alt="preview" style={{ width: "10vw" }} />
             )}
             <Form.Control
@@ -130,9 +135,34 @@ export default function ProductAdd() {
               className="mt-2"
               single
               onChange={(e) => {
-                setFile(e.target.files[0]);
+                setImage(e.target.files[0]);
               }}
             />
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    defaultChecked={false}
+                    checked={isEbook}
+                    onChange={() => setIsEbook(!isEbook)}
+                  />
+                }
+                label="eBook"
+              />
+            </FormGroup>
+            {isEbook ? (
+              <Form.Control
+                type="file"
+                name="document"
+                className="mt-2"
+                single
+                onChange={(e) => {
+                  setDocument(e.target.files[0]);
+                }}
+              />
+            ) : (
+              <></>
+            )}
           </div>
           <Button
             style={{ width: "100%" }}
